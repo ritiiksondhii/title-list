@@ -24,6 +24,8 @@ import { fetchIsbnList, ISBNData, setIsbnString, UpdateSelectedISBNS, UpdateSele
 import Loading from "../../common-components/Loader";
 import { formatCurrency } from "../../common-components/commonFunctions";
 import Alogo from '../../assets/images/logo.png'
+import { PostpdfData, setDetails } from "../../redux/reducers/DetailPageReducer";
+import { FaDownload, FaEye } from "react-icons/fa";
 
 interface OptionType {
   value: string;
@@ -303,7 +305,6 @@ useEffect(() => {
     value: SeasonData.SEASON ?? "",
     label: SeasonData.SEASON ?? "",
   }));
-  console.log(options,'optionss')
   const DivisionOption = divisionData.map((Division) => ({
     value: Division.division ?? "",
     label: Division.division ?? "",
@@ -315,16 +316,16 @@ useEffect(() => {
 
   const handleRowClick = (row: any, index: number) => {
     dispatch(setSelectedRowIndex(index));
-    // dispatch(setSelectedSeg(row._id));
+    dispatch(setDetails(row._id));
     navigate(`/details/${row._id}`);
   };
   useEffect(() => {
     if (TitleListData && TitleListData.length > 0 && selectedRowIndex == 0) {
       dispatch(setSelectedRowIndex(0));
-      // dispatch(setSelectedSeg(TitleListData[0]._id));
+      dispatch(setDetails(TitleListData[0]._id));
     }
   }, [TitleListData]);
-  console.log(TitleListdata,'rec')
+  // console.log(TitleListdata,'rec')
 
   const changeIsbnInfo = (event: any) => {
     // if(Array.isArray(event.target.value))
@@ -974,7 +975,19 @@ useEffect(() => {
             selectedIndex={selectedRowIndex}
             colSizes={[100, 100, 100, 100, 100]}
             // nextCallback={()=>}
-            // customActionButton={()=>{}}
+            actionButtons={true}
+            customActionButton={(row: any) => (
+              <div className="flex justify-center items-center ">
+                <div className="flex justify-center items-center ">
+                    <div className=" flex gap-2">
+                      {/* <div>
+                    <FaEye onClick={()=>handleRowClick} title="View"/>
+                      </div> */}
+                    <FaDownload title="Download"/>
+                    </div>
+                </div>
+              </div>
+            )}
             enableTopToolbar
             changeSelectedColumnDataDesign={[
               "PUB_DATE",
@@ -985,130 +998,156 @@ useEffect(() => {
               "totalInitOrd",
               "US_PRICE",
               "estimatePubGoal",
+              "TITLEPREFIXANDTITLE",
+              "EBOOK_ISBN","EAN"
             ]}
-            // changedDataCellColumn={(header, accessor) => {
-            //   if (accessor === "PUB_DATE" || accessor === "RELEASE_DATE") {
-            //     return {
-            //       accessorKey: accessor,
-            //       header: header,
-            //       Cell: ({ row }: { row: any }) => (
-            //         <div>
-            //           {row.original[accessor]?.length > 2
-            //             ? moment(row.original[accessor]).format("MM/DD/YYYY")
-            //             : " - "}
-            //         </div>
-            //       ),
-            //     };
-            //   } else if (accessor == "FULL_TITLE")
-            //     return {
-            //       accessorKey: accessor,
-            //       header: header,
-            //       Cell: ({ row }: { row: any }) => (
-            //         <div className="whitespace-nowrap max-w-[300px] overflow-y-auto">
-            //           {row.original[accessor]}
-            //         </div>
-            //       ),
-            //       size: 50,
-            //     };
-            //   else if (accessor == "totalPubGoal") {
-            //     return {
-            //       accessorKey: accessor,
-            //       header: header,
-            //       Cell: ({ row }: { row: any }) => {
-            //         const value =
-            //           typeof row?.original?.totalPubGoal === "number"
-            //             ? row?.original?.totalPubGoal
-            //             : row?.original?.totalPubGoal?.["$numberDecimal"];
-            //         const displayValue =
-            //           value || value === 0 ? `${value}` : "-";
-            //         return (
-            //           <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center">
-            //             {/* {row.original.totalPubGoal ? `${row.original.totalPubGoal['$numberDecimal']}` : '-' } */}
-            //             {displayValue}
-            //           </div>
-            //         );
-            //       },
-            //       size: 50,
-            //     };
-            //   } else if (accessor == "totalCurrentEst") {
-            //     return {
-            //       accessorKey: accessor,
-            //       header: header,
-            //       Cell: ({ row }: { row: any }) => {
-            //         const value =
-            //           typeof row?.original?.totalCurrentEst === "number"
-            //             ? row?.original?.totalCurrentEst
-            //             : row?.original?.totalCurrentEst?.["$numberDecimal"];
-            //         const displayValue =
-            //           value || value === 0 ? `${value}` : "-";
-            //         return (
-            //           <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center ">
-            //             {/* {row.original.totalCurrentEst ? `${row.original.totalCurrentEst['$numberDecimal']}` : '-' } */}
-            //             {displayValue}
-            //           </div>
-            //         );
-            //       },
-            //       size: 50,
-            //     };
-            //   } else if (accessor == "totalInitOrd") {
-            //     return {
-            //       accessorKey: accessor,
-            //       header: header,
-            //       Cell: ({ row }: { row: any }) => {
-            //         return (
-            //           <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center">
-            //             {row.original.totalInitOrd
-            //               ? `${row.original.totalInitOrd["$numberDecimal"]}`
-            //               : "-"}
-            //           </div>
-            //         );
-            //       },
-            //       size: 50,
-            //     };
-            //   } else if (accessor == "estimatePubGoal") {
-            //     return {
-            //       accessorKey: accessor,
-            //       header: header,
-            //       Cell: ({ row }: { row: any }) => {
-            //         const value = row?.original?.estimatePubGoal;
-            //         const displayValue =
-            //           value === null || value === undefined || value === " "
-            //             ? "-"
-            //             : value;
-            //         return (
-            //           <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center ">
-            //             {/* {
-            //           row.original.estimatePubGoal && row.original.estimatePubGoal["$numberDecimal"] != null && row.original.estimatePubGoal["$numberDecimal"] !== ""
-            //             ? `${row.original.estimatePubGoal["$numberDecimal"]}`
-            //             : "-"
-            //         } */}
-            //             {displayValue}
-            //           </div>
-            //         );
-            //       },
-            //       size: 50,
-            //     };
-            //   } else if (accessor == "US_PRICE") {
-            //     return {
-            //       accessorKey: accessor,
-            //       header: header,
-            //       Cell: ({ row }: { row: any }) => {
-            //         // const price = parseFloat(row.original.US_PRICE).toFixed(2);
-            //         return (
-            //           <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center">
-            //             {" "}
-            //             {formatCurrency(row.original.US_PRICE)}{" "}
-            //           </div>
-            //         );
-            //       },
-            //       size: 50,
-            //     };
-            //   }
-            //   return {
-            //     accessorKey: accessor,
-            //     header: header,
-            //   };
-            // }}
+            changedDataCellColumn={(header, accessor) => {
+              // if (accessor === "PUB_DATE" || accessor === "RELEASE_DATE") {
+              //   return {
+              //     accessorKey: accessor,
+              //     header: header,
+              //     Cell: ({ row }: { row: any }) => (
+              //       <div>
+              //         {row.original[accessor]?.length > 2
+              //           ? moment(row.original[accessor]).format("MM/DD/YYYY")
+              //           : " - "}
+              //       </div>
+              //     ),
+              //   };
+              // } else 
+              if (accessor == "FULL_TITLE")
+                return {
+                  accessorKey: accessor,
+                  header: header,
+                  Cell: ({ row }: { row: any }) => (
+                    <div className="overflow-auto">
+                    <div className="whitespace-nowrap max-w-[400px] ">
+                      {row.original[accessor]}
+                    </div>
+                    </div>
+                  ),
+                  size: 50,
+                };
+               else if (accessor == "TITLEPREFIXANDTITLE")
+                  return {
+                    accessorKey: accessor,
+                    header: header,
+                    Cell: ({ row }: { row: any }) => (
+                      <div className="overflow-auto">
+                      <div className="whitespace-nowrap max-w-[200px] w-[200px] ">
+                        {row.original[accessor]}
+                      </div>
+                      </div>
+                    ),
+                    size: 50,
+                  };
+               else if (accessor == "EBOOK_ISBN")
+                  return {
+                    accessorKey: accessor,
+                    header: header,
+                    Cell: ({ row }: { row: any }) => (
+                      <div className="overflow-auto">
+                      <div className="whitespace-nowrap max-w-[110px] w-[110px] ">
+                        {row.original[accessor]}
+                      </div>
+                      </div>
+                    ),
+                    size: 50,
+                  };
+               else if (accessor == "EAN")
+                  return {
+                    accessorKey: accessor,
+                    header: header,
+                    Cell: ({ row }: { row: any }) => (
+                      <div className="overflow-auto">
+                      <div className="whitespace-nowrap max-w-[110px] w-[110px] ">
+                        {row.original[accessor]}
+                      </div>
+                      </div>
+                    ),
+                    size: 50,
+                  };
+              
+              // else if (accessor == "totalCurrentEst") {
+              //   return {
+              //     accessorKey: accessor,
+              //     header: header,
+              //     Cell: ({ row }: { row: any }) => {
+              //       const value =
+              //         typeof row?.original?.totalCurrentEst === "number"
+              //           ? row?.original?.totalCurrentEst
+              //           : row?.original?.totalCurrentEst?.["$numberDecimal"];
+              //       const displayValue =
+              //         value || value === 0 ? `${value}` : "-";
+              //       return (
+              //         <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center ">
+              //           {/* {row.original.totalCurrentEst ? `${row.original.totalCurrentEst['$numberDecimal']}` : '-' } */}
+              //           {displayValue}
+              //         </div>
+              //       );
+              //     },
+              //     size: 50,
+              //   };
+              // } 
+              // else if (accessor == "totalInitOrd") {
+              //   return {
+              //     accessorKey: accessor,
+              //     header: header,
+              //     Cell: ({ row }: { row: any }) => {
+              //       return (
+              //         <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center">
+              //           {row.original.totalInitOrd
+              //             ? `${row.original.totalInitOrd["$numberDecimal"]}`
+              //             : "-"}
+              //         </div>
+              //       );
+              //     },
+              //     size: 50,
+              //   };
+              // } else if (accessor == "estimatePubGoal") {
+              //   return {
+              //     accessorKey: accessor,
+              //     header: header,
+              //     Cell: ({ row }: { row: any }) => {
+              //       const value = row?.original?.estimatePubGoal;
+              //       const displayValue =
+              //         value === null || value === undefined || value === " "
+              //           ? "-"
+              //           : value;
+              //       return (
+              //         <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center ">
+              //           {/* {
+              //         row.original.estimatePubGoal && row.original.estimatePubGoal["$numberDecimal"] != null && row.original.estimatePubGoal["$numberDecimal"] !== ""
+              //           ? `${row.original.estimatePubGoal["$numberDecimal"]}`
+              //           : "-"
+              //       } */}
+              //           {displayValue}
+              //         </div>
+              //       );
+              //     },
+              //     size: 50,
+              //   };
+              // } else if (accessor == "US_PRICE") {
+              //   return {
+              //     accessorKey: accessor,
+              //     header: header,
+              //     Cell: ({ row }: { row: any }) => {
+              //       // const price = parseFloat(row.original.US_PRICE).toFixed(2);
+              //       return (
+              //         <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center">
+              //           {" "}
+              //           {formatCurrency(row.original.US_PRICE)}{" "}
+              //         </div>
+              //       );
+              //     },
+              //     size: 50,
+              //   };
+              // }
+              return {
+                accessorKey: accessor,
+                header: header,
+              };
+            }}
             topToolbar={({ table }) => (
               <form
                 // onSubmit={handleSubmit(handleSearch)}

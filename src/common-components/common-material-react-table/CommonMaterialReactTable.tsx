@@ -462,8 +462,8 @@ export const CommonDataTable: React.FC<CommonDataTableProps> = ({
         // }}
         muiTableBodyCellProps={{
           sx: {
-            padding: "8px",
-            border: ".5px solid gray",
+            padding: "1px",
+            border: "0.1px solid gray",
 
             alignItems: "center",
 
@@ -479,9 +479,9 @@ export const CommonDataTable: React.FC<CommonDataTableProps> = ({
             sx: {
               height: "20px",
               
-              backgroundColor: row.index === selectedIndex ? '#d9d9d9' : 'white',
+              backgroundColor: row.index === selectedIndex ? '#F7ECEE' : 'white',
               '&:hover': {
-                backgroundColor: row.index === selectedIndex ? '#d9d9d9' : '#d9d9d9',
+                backgroundColor: row.index === selectedIndex ? '#F7ECEE' : '#F7ECEE',
               },
             
 

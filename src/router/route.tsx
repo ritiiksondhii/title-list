@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import TmmMain from "../components/TMM/TmmMain";
 import Loading from "../common-components/Loader";
-import BookDetail from "../components/Detail page/BookDetail";
+import DetailPagePdf from "../components/Detail page/DetailPagePdf";
 
 const Layout = React.lazy(() => import("./layout"));
 
@@ -35,7 +35,7 @@ export const routes = createBrowserRouter([
         ),
       },
       {
-        path: "/details",
+        path: "/details/:id?",
         element: (
           <ProtectedRoute
             element={
@@ -49,7 +49,7 @@ export const routes = createBrowserRouter([
                   ></Loading>
                 }
               >
-              <BookDetail/>
+              <DetailPagePdf/>
                </Suspense>
             }
           />
