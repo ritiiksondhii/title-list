@@ -8,7 +8,7 @@ export const TmmRecords = {
     US_PRICE:"US_PRICE",
     CANADIAN_PRICE:"Canadian Price",
     UK_PRICE:"UK Price",
-    "AUTHOR-1":"Author",
+    AUTHOR_1:"Author",
     TESTIMPRINTFROMHNA:"Imprint",
     FORMAT:"Format",
     BISAC1_DESC:"BISAC Description",

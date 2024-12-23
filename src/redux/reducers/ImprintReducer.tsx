@@ -18,7 +18,7 @@ interface SeasonState {
   error: string | null;
   isLoading: boolean;
   selectedImprint:string[];
-selectedImprintList:OptionType[]
+  selectedImprintList:string[];
 }
 const initialState: SeasonState = {
   data: [],

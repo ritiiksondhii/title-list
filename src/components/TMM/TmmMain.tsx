@@ -13,7 +13,7 @@ import {
 } from "../../redux/reducers/TitleListreducer";
 import { useNavigate } from "react-router-dom";
 import { FetchSeason,UpdateSelectedSeason,UpdateSelectedSeasonList } from "../../redux/reducers/SeasonReducer";
-import Select, { components } from "react-select";
+import SelectList, { components } from "react-select";
 import { fetchDivision, UpdateSelectedDivision, UpdateSelectedDivisionList } from "../../redux/reducers/DivisionReducer";
 import { fetchImprint, UpdateSelectedImprint, UpdateSelectedImprintList } from "../../redux/reducers/ImprintReducer";
 import { Controller, useForm } from "react-hook-form";
@@ -26,6 +26,18 @@ import { formatCurrency } from "../../common-components/commonFunctions";
 import Alogo from '../../assets/images/logo.png'
 import { PostpdfData, setDetails } from "../../redux/reducers/DetailPageReducer";
 import { FaDownload, FaEye } from "react-icons/fa";
+import {
+  Checkbox,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
+import { FetchManagingEditor, UpdatemanagingEditor, UpdatemanagingEditorList } from "../../redux/reducers/managingEditorReducer";
+import { FetchEditor, UpdateEditor, UpdateEditorList } from "../../redux/reducers/editorReducer";
+import { FetchbisacStatus, UpdatebisacStatus, UpdatebisacStatusList } from "../../redux/reducers/BisanStatusReducer";
+import { FetchAuthor1, UpdateAuthor1, UpdateAuthor1List } from "../../redux/reducers/AUTHOR1Reducer";
 
 interface OptionType {
   value: string;
@@ -33,9 +45,13 @@ interface OptionType {
 }
 
 interface FormValues {
-  season: OptionType[];
-  division: OptionType[];
-  imprint: OptionType[];
+  season: string[];
+  division: string[];
+  imprint: string[];
+  managingEditor: string[];
+  editor: string[];
+  bisac_status:string[];
+  author:OptionType[];
   title:OptionType[];
   isbn:OptionType[];
 }
@@ -58,7 +74,13 @@ const TmmMain = () => {
   );
   const [isbn_title_options, set_ISBN_TITLE_OPTION] = useState<OptionType[]>([]);
 
-    // setting the values of all matched isbns
+  const authorsData = useSelector((state:RootState) => state.AUTHOR1Reducer.data);
+
+  const authorOptions: OptionType[] = authorsData.map((author: any) => ({
+    value: author.AUTHOR_1 ?? "",
+    label: author.AUTHOR_1 ?? "",
+  }));
+// setting the values of all matched isbns
     useEffect(() => {
       if (isbns?.length) {
         set_ISBN_NUMBER_OPTION(
@@ -104,13 +126,30 @@ const TmmMain = () => {
 
   const selectedIsbnsList = useSelector((state:RootState) => state.isbnReducer.selectedISBNSList)
   const selectedTitlesList = useSelector((state:RootState) => state.isbnReducer.selectedTitlesList)
+  const selectedAuthorsList = useSelector((state:RootState) => state.AUTHOR1Reducer.Author1List);
+  const selectedAuthors = useSelector((state:RootState) => state.AUTHOR1Reducer.Author1);
 
   const selectedIsbns = useSelector((state:RootState) => state.isbnReducer.selectedISBNS)
+  const selectedManagingEditors = useSelector((state:RootState) => state.managingEditorReducer.managingEditor)
+  const selectedEditors = useSelector((state:RootState) => state.editorReducer.Editor)
+  const selectedBisacStatus = useSelector((state:RootState) => state.BisanStatusReducer.bisacStatus)
 
   const navigate = useNavigate();
   const SeasonData = useSelector(
     (state: RootState) => state.SeasonReducer.data
   );
+  const ManagingEditorData = useSelector(
+    (state: RootState) => state.managingEditorReducer.data
+  );
+
+  const editorData = useSelector(
+    (state: RootState) => state.editorReducer.data
+  );
+
+  const bisacStatusData = useSelector(
+    (state: RootState) => state.BisanStatusReducer.data
+  );
+
   const divisionData = useSelector(
     (state: RootState) => state.DivisionReducer.data
   );
@@ -176,20 +215,29 @@ useEffect(() => {
     setValue("isbn",[])
     setValue("title",[])
 
-    const seasonData = Array.isArray(watch("season"))
-      ? watch("season").map((data) => data.value)
-      : [];
-    const division = Array.isArray(watch("division"))
-      ? watch("division").map((data) => data.value)
-      : [];
+    // const seasonData = Array.isArray(watch("season"))
+    //   ? watch("season").map((data) => data.value)
+    //   : [];
+    const division =
+    //  Array.isArray(watch("division"))
+      // ? 
+      watch("division")
+      // .map((data) => data.value)
+      // : [];
 
-    const isbns = Array.isArray(watch("isbn"))
-    ? watch("isbn").map((data) => data.value)
-    : [];
+    const isbns = 
+    // Array.isArray(watch("isbn"))
+    // ? 
+    watch("isbn")
+    // .map((data) => data.value)
+    // : [];
 
-    const imprint = Array.isArray(watch("imprint"))
-      ? watch("imprint").map((data) => data.value)
-      : [];
+    const imprint = 
+    // Array.isArray(watch("imprint"))
+    //   ? 
+      watch("imprint")
+      // .map((data) => data.value)
+      // : [];
       const TitleListIds=TitleListData.map((data)=>data._id)
 
     dispatch(
@@ -200,11 +248,19 @@ useEffect(() => {
         Division: [],
         Imprint: [],
         TitleListIds:TitleListIds,
+        managingEditor:[],
+        editors:[],
+        bisacStatus:[],
+        author:[],
         isbns:[],
         prevSeason:selectedSeason,
         prevDivision:selectedDivision,
         prevImprint:selectedImprint,
-        prevIsbns:selectedIsbns
+        prevIsbns:selectedIsbns,
+        prevManagingEditors: selectedManagingEditors,
+        prevEditors: selectedEditors,
+        prevBisacStatus: selectedBisacStatus,
+        prevAuthor: selectedAuthors
       })
     );
     
@@ -213,30 +269,59 @@ useEffect(() => {
     dispatch(UpdateSelectedSeason([]))
     dispatch(UpdateSelectedDivision([]))
     dispatch(UpdateSelectedImprint([]))
+    dispatch(UpdatemanagingEditor([]))
+    dispatch(UpdateAuthor1([]))
+    dispatch(UpdatebisacStatus([]))
+    dispatch(UpdateEditor([]))
+
     dispatch(UpdateSelectedISBNSList(watch('isbn')))
     dispatch(UpdateSelectedTitlesList(watch('title')))
     dispatch(UpdateSelectedSeasonList(watch('season')))
     dispatch(UpdateSelectedDivisionList(watch('division')))
     dispatch(UpdateSelectedImprintList(watch('imprint')))
+    dispatch(UpdateAuthor1List(watch("author")))
+    dispatch(UpdatebisacStatusList(watch("bisac_status")))
+    dispatch(UpdateEditorList(watch("editor")))
+    dispatch(UpdatemanagingEditorList(watch("managingEditor")))
   }
 
 
   useEffect(() => {
-    const seasonData = Array.isArray(watch("season"))
-      ? watch("season").map((data) => data.value)
-      : [];
+    const seasonData = 
+    // Array.isArray(watch("season"))
+    //   ? 
+      watch("season")
+      // .map((data) => data.value)
+      // : [];
 
-    const division = Array.isArray(watch("division"))
-      ? watch("division").map((data) => data.value)
-      : [];
+    const division =
+    //  Array.isArray(watch("division"))
+    //   ? 
+      watch("division")
+      // .map((data) => data.value)
+      // : [];
 
-    const isbns = Array.isArray(watch("isbn"))
-    ? watch("isbn").map((data) => data.value)
+    const isbns =
+     Array.isArray(watch("isbn"))
+    ? 
+    watch("isbn")
+    .map((data) => data.value)
     : [];
 
-    const imprint = Array.isArray(watch("imprint"))
-      ? watch("imprint").map((data) => data.value)
-      : [];
+    const authors =
+     Array.isArray(watch("author"))
+    ? 
+    watch("author")
+    .map((data) => data.value)
+    : [];
+
+
+    const imprint = 
+    // Array.isArray(watch("imprint"))
+    //   ? 
+      watch("imprint")
+      // .map((data) => data.value)
+      // : [];
       const TitleListIds=TitleListData.map((data)=>data._id)
 
     dispatch(
@@ -246,73 +331,235 @@ useEffect(() => {
         season: seasonData,
         Division: division,
         Imprint: imprint,
+        managingEditor:watch("managingEditor"),
+        editors:watch("editor"),
+        bisacStatus:watch("bisac_status"),
+        author:authors,
         TitleListIds:TitleListIds,
         isbns:isbns,
         prevSeason:selectedSeason,
         prevDivision:selectedDivision,
         prevImprint:selectedImprint,
-        prevIsbns:selectedIsbns
+        prevIsbns:selectedIsbns,
+        prevManagingEditors: selectedManagingEditors,
+        prevEditors: selectedEditors,
+        prevBisacStatus: selectedBisacStatus,
+        prevAuthor: selectedAuthors
       })
     );
     dispatch(UpdateSelectedISBNS(isbns))
-    dispatch(UpdateSelectedTitles(isbns))
-    dispatch(UpdateSelectedSeason(seasonData))
-    dispatch(UpdateSelectedDivision(division))
-    dispatch(UpdateSelectedImprint(imprint))
     dispatch(UpdateSelectedISBNSList(watch('isbn')))
+    
+    dispatch(UpdateAuthor1(authors))
+    dispatch(UpdateAuthor1List(watch("author")))
+    
+    dispatch(UpdatebisacStatus(watch("bisac_status")))
+    dispatch(UpdatebisacStatusList(watch("bisac_status")))
+
+    dispatch(UpdateEditor(watch("editor")))
+    dispatch(UpdateEditorList(watch("editor")))
+    
+    dispatch(UpdatemanagingEditor(watch("managingEditor")))
+    dispatch(UpdatemanagingEditorList(watch("managingEditor")))
+
+    dispatch(UpdateSelectedTitles(isbns))
     dispatch(UpdateSelectedTitlesList(watch('title')))
+    
+    dispatch(UpdateSelectedSeason(seasonData))
     dispatch(UpdateSelectedSeasonList(watch('season')))
+    
+    dispatch(UpdateSelectedDivision(division))
     dispatch(UpdateSelectedDivisionList(watch('division')))
+    
+    dispatch(UpdateSelectedImprint(imprint))
     dispatch(UpdateSelectedImprintList(watch('imprint')))
 
   }, [page]);
 
   useEffect(() => {
+    const seasonData =
+    //  Array.isArray(watch("season"))
+    //   ? 
+      watch("season")
+      // .map((data) => data.value)
+      // : [];
 
-    const seasonData = Array.isArray(watch("season"))
-      ? watch("season").map((data) => data.value)
-      : [];
+    const division = 
+    // Array.isArray(watch("division"))
+    //   ? 
+      watch("division")
+      // .map((data) => data.value)
+      // : [];
 
-    const division = Array.isArray(watch("division"))
-      ? watch("division").map((data) => data.value)
-      : [];
-
-    const isbns = Array.isArray(watch("isbn"))
-    ? watch("isbn").map((data) => data.value)
+    const isbns = 
+    Array.isArray(watch("isbn"))
+    ? 
+    watch("isbn")
+    .map((data) => data.value)
     : [];
 
-    const imprint = Array.isArray(watch("imprint"))
-      ? watch("imprint").map((data) => data.value)
-      : [];
+    const authors = 
+    Array.isArray(watch("author"))
+    ? 
+    watch("author")
+    .map((data) => data.value)
+    : [];
 
-    dispatch(fetchDivision({seasons:seasonData,divisions:division,isbns:isbns,imprint:imprint}));
-    dispatch(FetchSeason({seasons:seasonData,divisions:division,isbns:isbns,imprint:imprint}));
-    dispatch(fetchImprint({seasons:seasonData,divisions:division,isbns:isbns,imprint:imprint}));
+    const imprint = 
+    // Array.isArray(watch("imprint"))
+    //   ? 
+      watch("imprint")
+      // .map((data) => data.value)
+      // : [];
+      
+    const managingEditors = watch("managingEditor")
+    const bisacStatus = watch("bisac_status")
+    const editors = watch("editor")
+
+    dispatch(FetchbisacStatus({
+      seasons:seasonData,
+      divisions:division,
+      isbns:isbns,
+      imprint:imprint,
+      managingEditors:managingEditors,
+      authors:authors,
+      bisacStatus:bisacStatus,
+      editors:editors
+    })); 
+
+    dispatch(FetchAuthor1({
+      seasons:seasonData,
+      divisions:division,
+      isbns:isbns,
+      imprint:imprint,
+      managingEditors:managingEditors,
+      authors:authors,
+      bisacStatus:bisacStatus,
+      editors:editors
+    })); 
+
+      dispatch(FetchEditor({
+        seasons:seasonData,
+        divisions:division,
+        isbns:isbns,
+        imprint:imprint,
+        managingEditors:managingEditors,
+        authors:authors,
+        bisacStatus:bisacStatus,
+        editors:editors
+      }));  
+      dispatch(FetchManagingEditor({
+        seasons:seasonData,
+        divisions:division,
+        isbns:isbns,
+        imprint:imprint,
+        managingEditors:managingEditors,
+        authors:authors,
+        bisacStatus:bisacStatus,
+        editors:editors
+      }));  
+
+    dispatch(fetchDivision({
+      seasons:seasonData,
+      divisions:division,
+      isbns:isbns,
+      imprint:imprint,
+      managingEditors:managingEditors,
+      authors:authors,
+      bisacStatus:bisacStatus,
+      editors:editors
+    }));
+    dispatch(FetchSeason({
+      seasons:seasonData,
+      divisions:division,
+      isbns:isbns,
+      imprint:imprint,
+      managingEditors:managingEditors,
+      authors:authors,
+      bisacStatus:bisacStatus,
+      editors:editors
+    }));
+    dispatch(fetchImprint({
+      seasons:seasonData,
+      divisions:division,
+      isbns:isbns,
+      imprint:imprint,
+      managingEditors:managingEditors,
+      authors:authors,
+      bisacStatus:bisacStatus,
+      editors:editors
+    }));
     dispatch(
       fetchIsbnList({
-        seasons:seasonData,divisions:division,isbns:isbns,imprint:imprint,
+        seasons:seasonData,
+        managingEditors:managingEditors,
+        authors:authors,
+        bisacStatus:bisacStatus,
+        editors:editors,
+        divisions:division,isbns:isbns,imprint:imprint,
         limit: isbnLimit,
         skip: isbnLimit * isbnSkip,
         selectedData: watch("isbn")?.length
-          ? watch("isbn").map((isbn) => isbn.label)
+          ? watch("isbn")
+          .map((isbn) => isbn.label)
           : [],
       })
     );
 
-  },[watch("season"),watch("division"),watch("imprint"),watch("isbn")])
+  },[watch("season"),watch("division"),watch("imprint"),watch("isbn"), watch("author"), watch("bisac_status"), watch("editor"), watch("managingEditor")])
 
-  const options = SeasonData.map((SeasonData) => ({
-    value: SeasonData.SEASON ?? "",
-    label: SeasonData.SEASON ?? "",
-  }));
-  const DivisionOption = divisionData.map((Division) => ({
-    value: Division.division ?? "",
-    label: Division.division ?? "",
-  }));
-  const ImprintOption = imprintData.map((imprint) => ({
-    value: imprint.IMPRINT,
-    label: imprint.IMPRINT,
-  }));
+  const options = SeasonData.map((SeasonData) => (
+    // {
+    // value: SeasonData.SEASON ?? "",
+    // label: 
+    SeasonData.SEASON ?? ""
+  // }
+)
+);
+
+const managingEditorOptions = ManagingEditorData.map((managingEditor) => (
+  // {
+  // value: SeasonData.SEASON ?? "",
+  // label: 
+  managingEditor.MANAGING_EDITOR ?? ""
+// }
+)
+);
+
+const editorOptions = editorData.map((editor) => (
+  // {
+  // value: SeasonData.SEASON ?? "",
+  // label: 
+  editor.EDITOR ?? ""
+// }
+)
+);
+
+const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
+  // {
+  // value: SeasonData.SEASON ?? "",
+  // label: 
+  bisacStatus.BISAC_STATUS ?? ""
+// }
+)
+);
+
+  const DivisionOption = 
+  divisionData.map((Division) => (
+    // {
+  //   value: Division.division ?? "",
+  //   label: 
+    Division.division ?? ""
+  // }
+));
+  const ImprintOption = 
+  imprintData.map((imprint) => (
+    // {
+  //   value: imprint.IMPRINT,
+  //   label:
+     imprint.IMPRINT
+  // }
+));
 
   const handleRowClick = (row: any, index: number) => {
     dispatch(setSelectedRowIndex(index));
@@ -325,7 +572,6 @@ useEffect(() => {
       dispatch(setDetails(TitleListData[0]._id));
     }
   }, [TitleListData]);
-  // console.log(TitleListdata,'rec')
 
   const changeIsbnInfo = (event: any) => {
     // if(Array.isArray(event.target.value))
@@ -353,22 +599,41 @@ useEffect(() => {
   };
 
   const handleTitleListRecordsFilterFetch = () => {
-    const seasonData = Array.isArray(watch("season"))
-      ? watch("season").map((data) => data.value)
-      : [];
+    const seasonData = 
+    // Array.isArray(watch("season"))
+    //   ? 
+      watch("season")
+      // .map((data) => data.value)
+      // : [];
 
-    const division = Array.isArray(watch("division"))
-      ? watch("division").map((data) => data.value)
-      : [];
+    const division = 
+    // Array.isArray(watch("division"))
+    //   ? 
+      watch("division")
+      // .map((data) => data.value)
+      // : [];
 
-    const isbns = Array.isArray(watch("isbn"))
-    ? watch("isbn").map((data) => data.value)
-    : [];
+    const isbns = 
+    // Array.isArray(watch("isbn"))
+    // ? 
+    watch("isbn")
+    // .map((data) => data.value)
+    // : [];
 
-    const imprint = Array.isArray(watch("imprint"))
-      ? watch("imprint").map((data) => data.value)
-      : [];
+    const imprint =
+    //  Array.isArray(watch("imprint"))
+    //   ? 
+      watch("imprint")
+      // .map((data) => data.value)
+      // : [];
       const TitleListIds=TitleListData.map((data)=>data._id)
+
+      const authors =
+      Array.isArray(watch("author"))
+     ? 
+     watch("author")
+     .map((data) => data.value)
+     : [];
 
     dispatch(
       FetchTitleListRecord({
@@ -379,22 +644,46 @@ useEffect(() => {
         Imprint: imprint,
         TitleListIds:TitleListIds,
         isbns:isbns,
+        managingEditor:watch("managingEditor"),
+        editors:watch("editor"),
+        bisacStatus:watch("bisac_status"),
+        author:authors,
         prevSeason:selectedSeason,
         prevDivision:selectedDivision,
         prevImprint:selectedImprint,
-        prevIsbns:selectedIsbns
+        prevIsbns:selectedIsbns,
+        prevManagingEditors: selectedManagingEditors,
+        prevEditors: selectedEditors,
+        prevBisacStatus: selectedBisacStatus,
+        prevAuthor: selectedAuthors
       })
     );
-    dispatch(UpdateSelectedISBNSList(watch('isbn')))
     dispatch(UpdateSelectedISBNS(isbns))
-    dispatch(UpdateSelectedTitlesList(watch('title')))
+    dispatch(UpdateSelectedISBNSList(watch('isbn')))
+    
+    dispatch(UpdateAuthor1(authors))
+    dispatch(UpdateAuthor1List(watch("author")))
+    
+    dispatch(UpdatebisacStatus(watch("bisac_status")))
+    dispatch(UpdatebisacStatusList(watch("bisac_status")))
+
+    dispatch(UpdateEditor(watch("editor")))
+    dispatch(UpdateEditorList(watch("editor")))
+    
+    dispatch(UpdatemanagingEditor(watch("managingEditor")))
+    dispatch(UpdatemanagingEditorList(watch("managingEditor")))
+
     dispatch(UpdateSelectedTitles(isbns))
-    dispatch(UpdateSelectedSeasonList(watch('season')))
+    dispatch(UpdateSelectedTitlesList(watch('title')))
+    
     dispatch(UpdateSelectedSeason(seasonData))
-    dispatch(UpdateSelectedDivisionList(watch('division')))
+    dispatch(UpdateSelectedSeasonList(watch('season')))
+    
     dispatch(UpdateSelectedDivision(division))
-    dispatch(UpdateSelectedImprintList(watch('imprint')))
+    dispatch(UpdateSelectedDivisionList(watch('division')))
+    
     dispatch(UpdateSelectedImprint(imprint))
+    dispatch(UpdateSelectedImprintList(watch('imprint')))
   };
   
   const tableStyles={
@@ -435,98 +724,78 @@ useEffect(() => {
           <div className="w-full">
                     <p className="text-[#e31c23] font-bold "> SEASON</p>
                     <div className=" grid grid-cols-1">
-                      <Controller
-                        name="season"
-                        control={control}
-                        render={({ field }) => {
-                          return (
-                            <div className=" w-full">
-                              <Select
-                                {...field}
-                                placeholder="Select Season"
-                                options={options}
-                                isMulti
-                                onChange={(e) => {
-                                  field.onChange(e)
-                                  handleTitleListRecordsFilterFetch()
-                                }}
-                                value={selectedSeasonlist}
-                                className="border border-solid border-neutral-300 font-poppins rounded-lg  w-full lg:text-[14px] sm:text-[10px] "
-                                components={{
-                                  MultiValueContainer: (props) => (
-                                    <components.MultiValueContainer {...props}>
-                                      <div className="flex">{props.children}</div>
-                                    </components.MultiValueContainer>
-                                  ),
-                                }}
-                                styles={{
-                                  input: (provided) => ({
-                                    ...provided,
-                                    position: `${
-                                      watch("season")?.length
-                                        ? "relative"
-                                        : "absolute"
-                                    }`,
-                                    left: 6,
-                                    marginRight: "80px",
-                                  }),
-                                  multiValue: (provided) => ({
-                                    ...provided,
-                                    height: "30px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    borderRadius: "6px",
-                                    minWidth: "none",
-                                    
-                                  }),
-
-                                  valueContainer: (provided) => ({
-                                    position: "relative",
-                                    maxWidth: "28vw",
-                                    width: "100%",
-                                    paddingLeft: "8px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    height: "40px",
-                                    overflowX: "auto",
-                                    "@media (max-width:600px)": {
-                                      maxWidth: "55vw",
-                                    },
-                                  }),
-                                  control: (provided) => ({
-                                    display: "flex",
-                                    // maxWidth:"37vw",
-                                    // width:"510px",
-                                    height: "40px",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    width: "100%",
-                                    
-                                  }),
-                                  menuList:(provided) => ({
-                                    // ...provided,
-                                    maxHeight:"200px",
-                                    overflow:'hidden',
-                                    overflowY:"auto",
-                
-                                  }),
-                                  clearIndicator:()=>({
-                                    marginLeft: "20px",
-                                    marginTop:"5px",
-                                    color:"gray"
-                                  })
-                                }}
-                              />
-                            </div>
-                          );
-                        }}
-                      />
+                    <Controller
+                      name="season"
+                      control={control}
+                      defaultValue={[]}
+                      rules={{
+                        onChange: (e) => handleTitleListRecordsFilterFetch(),
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          labelId="select-label"
+                          multiple
+                          className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
+                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 200,
+                                maxWidth:100,
+                                overflow: 'auto',
+                              },
+                            },
+                          }}
+                        >
+                          {options.map((option) => (
+                            <MenuItem key={option} value={option}>
+                              <Checkbox checked={field.value.indexOf(option) > -1} />
+                              <ListItemText primary={option} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
                     </div>
                   </div>
                   <div className="w-full">
                     <p className="text-[#e31c23] font-bold">DIVISION</p>
-                    <div className="w-full grid grid-cols-1">
-                      <Controller
+                    <div className="grid grid-cols-1">
+                    <Controller
+                      name="division"
+                      control={control}
+                      defaultValue={[]}
+                      rules={{
+                        onChange: (e) => handleTitleListRecordsFilterFetch(),
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          labelId="select-label"
+                          multiple
+                          className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
+                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 200,
+                                maxWidth:100, 
+                                overflow: 'auto',
+                              },
+                            },
+                          }}
+                        >
+                          {DivisionOption.map((option) => (
+                            <MenuItem key={option} value={option}>
+                              <Checkbox checked={field.value.indexOf(option) > -1} />
+                              <ListItemText primary={option} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+                      {/* <Controller
                         name="division"
                         control={control}
                         render={({ field }) => {
@@ -606,13 +875,46 @@ useEffect(() => {
                             />
                           );
                         }}
-                      />
+                      /> */}
                     </div>
                   </div>
                   <div className="w-full">
                     <p className="text-[#e31c23] font-bold">IMPRINT</p>
                     <div className="w-full grid grid-cols-1">
-                      <Controller
+                    <Controller
+                      name="imprint"
+                      control={control}
+                      defaultValue={[]}
+                      rules={{
+                        onChange: (e) => handleTitleListRecordsFilterFetch(),
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          labelId="select-label"
+                          multiple
+                          className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
+                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 200,
+                                maxWidth:100,
+                                overflow: 'auto',
+                              },
+                            },
+                          }}
+                        >
+                          {ImprintOption.map((option) => (
+                            <MenuItem key={option} value={option}>
+                              <Checkbox checked={field.value.indexOf(option) > -1} />
+                              <ListItemText primary={option} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+                      {/* <Controller
                         name="imprint"
                         control={control}
                         render={({ field }) => {
@@ -693,13 +995,46 @@ useEffect(() => {
                             />
                           );
                         }}
-                      />
+                      /> */}
                     </div>
                   </div>
           <div className="w-full">
             <p className="text-[#e31c23] font-bold ">Managing Editor</p>
             <div className="w-full grid grid-cols-1">
-              <Controller
+            <Controller
+                      name="managingEditor"
+                      control={control}
+                      defaultValue={[]}
+                      rules={{
+                        onChange: (e) => handleTitleListRecordsFilterFetch(),
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          labelId="select-label"
+                          multiple
+                          className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
+                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 200,
+                                maxWidth:100,
+                                overflow: 'auto',
+                              },
+                            },
+                          }}
+                        >
+                          {managingEditorOptions.map((option) => (
+                            <MenuItem key={option} value={option}>
+                              <Checkbox checked={field.value.indexOf(option) > -1} />
+                              <ListItemText primary={option} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+              {/* <Controller
                 name="imprint"
                 control={control}
                 render={({ field }) => {
@@ -778,13 +1113,46 @@ useEffect(() => {
                     />
                   );
                 }}
-              />
+              /> */}
             </div>
           </div>
           <div className="w-full">
             <p className="text-[#e31c23] font-bold ">Editor</p>
             <div className="w-full grid grid-cols-1">
-              <Controller
+            <Controller
+                      name="editor"
+                      control={control}
+                      defaultValue={[]}
+                      rules={{
+                        onChange: (e) => handleTitleListRecordsFilterFetch(),
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          labelId="select-label"
+                          multiple
+                          className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
+                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 200,
+                                maxWidth:100,
+                                overflow: 'auto',
+                              },
+                            },
+                          }}
+                        >
+                          {editorOptions.map((option) => (
+                            <MenuItem key={option} value={option}>
+                              <Checkbox checked={field.value.indexOf(option) > -1} />
+                              <ListItemText primary={option} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+              {/* <Controller
                 name="imprint"
                 control={control}
                 render={({ field }) => {
@@ -863,13 +1231,46 @@ useEffect(() => {
                     />
                   );
                 }}
-              />
+              /> */}
             </div>
           </div>
           <div className="w-full">
             <p className="text-[#e31c23] font-bold ">Bisac Status</p>
             <div className="w-full grid grid-cols-1">
-              <Controller
+            <Controller
+                      name="bisac_status"
+                      control={control}
+                      defaultValue={[]}
+                      rules={{
+                        onChange: (e) => handleTitleListRecordsFilterFetch(),
+                      }}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          labelId="select-label"
+                          multiple
+                          className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
+                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 200,
+                                maxWidth:100,
+                                overflow: 'auto',
+                              },
+                            },
+                          }}
+                        >
+                          {bisacStatusOptions.map((option) => (
+                            <MenuItem key={option} value={option}>
+                              <Checkbox checked={field.value.indexOf(option) > -1} />
+                              <ListItemText primary={option} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+              {/* <Controller
                 name="imprint"
                 control={control}
                 render={({ field }) => {
@@ -948,7 +1349,7 @@ useEffect(() => {
                     />
                   );
                 }}
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -1173,7 +1574,7 @@ useEffect(() => {
                               field: { onChange, onBlur, value, name, ref },
                             }) => (
                               <div className="relative flex flex-col md: w-full">
-                                <Select
+                                <SelectList
                                   placeholder={"Select ISBN"}
                                   // onMenuScrollToBottom={() => {
                                   //   setIsbnSkip((old) => (old += 1));
@@ -1301,7 +1702,7 @@ useEffect(() => {
                             render={({
                               field: { onChange, onBlur, value, name, ref },
                             }) => (
-                                <Select
+                                <SelectList
                                   placeholder={"Select Title"}
                                   isMulti
                                   // onMenuScrollToBottom={() => {
@@ -1417,88 +1818,126 @@ useEffect(() => {
                         <div className="w-full">
                     <p className="text-[#e31c23] font-bold "> Author</p>
                     <div className="w-full grid grid-cols-1">
-                      <Controller
-                        name="imprint"
-                        control={control}
-                        render={({ field }) => {
-                          return (
-                            <Select
-                            placeholder="Select Author"
-                              {...field}
-                              // options={ImprintOption}
-                              // isMulti
-                              // onChange={(e) => {
-                              //   field.onChange(e)
-                              //   handleSegRecordsFilterFetch()
-                              // }}
-                              // value={selectedImprintlist}
-                              className="border border-solid border-neutral-300 font-poppins rounded-lg 
-                              w-full lg:text-[14px] sm:text-[10px]"
-                              components={{
-                                MultiValueContainer: (props) => (
-                                  <components.MultiValueContainer {...props}>
-                                    <div className="flex">{props.children}</div>
-                                  </components.MultiValueContainer>
-                                ),
-                              }}
-                              styles={{
-                                input: (provided) => ({
-                                  ...provided,
-                                  position: `${
-                                    watch("imprint")?.length
-                                      ? "relative"
-                                      : "absolute"
-                                  }`,
-                                  left: 6,
-                                  marginRight: "60px",
-                                }),
-                                multiValue: (provided) => ({
-                                  ...provided,
-                                  height: "30px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  borderRadius: "6px",
-                                  minWidth: "none",
-                                }),
-
-                                valueContainer: (provided) => ({
-                                  position: "relative",
-                                  maxWidth: "28vw",
-                                  width: "100%",
-                                  paddingLeft: "8px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  height: "40px",
-                                  overflowX: "auto",
-                                  "@media (max-width:600px)": {
-                                    maxWidth: "55vw",
-                                  },
-                                }),
-                                control: (provided) => ({
-                                  display: "flex",
-                                  // maxWidth:"37vw",
-                                  // width:"510px",
-                                  height: "40px",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  width: "100%",
-                                }),
-                                menuList:(provided) => ({
-                                  // ...provided,
-                                  maxHeight:"200px",
-                                  overflow:'hidden',
-                                  overflowY:"auto",
-                                }),
-                                clearIndicator:()=>({
-                                  marginLeft: "20px",
-                                  marginTop:"5px",
-                                  color:"gray"
-                                })
-                              }}
-                            />
-                          );
-                        }}
-                      />
+                    <Controller
+                            control={control}
+                            name="author"
+                            rules={{
+                              onChange: handleTitleListRecordsFilterFetch,
+                              required: "Author is required",
+                            }}
+                            render={({
+                              field: { onChange, onBlur, value, name, ref },
+                            }) => (
+                                <SelectList
+                                  placeholder={"Select Author"}
+                                  isMulti
+                                  // onMenuScrollToBottom={() => {
+                                  //   setIsbnSkip((old) => (old += 1));
+                                  //   dispatch(
+                                  //     fetchIsbnList({
+                                  //       limit: isbnLimit,
+                                  //       skip: (isbnSkip + 1) * isbnLimit,
+                                  //       selectedData: watch("isbn")?.length
+                                  //         ? watch("isbn").map(
+                                  //             (isbn) => isbn.label
+                                  //           )
+                                  //         : [],
+                                  //       isbnTitle: isbnsString,
+                                  //     })
+                                  //   );
+                                  // }}
+                                  // id="title-selector"
+                                  ref={ref}
+                                  // onInputChange={(value) => {
+                                  //   dispatch(setIsbnString(value));
+                                  //   dispatch(
+                                  //     fetchIsbnList({
+                                  //       limit: isbnLimit,
+                                  //       skip: 0,
+                                  //       selectedData: watch("isbn")?.length
+                                  //         ? watch("isbn").map(
+                                  //             (isbn) => isbn.label
+                                  //           )
+                                  //         : [],
+                                  //       isbnTitle: value,
+                                  //     })
+                                  //   );
+                                  // }}
+                                  name={name}
+                                  onBlur={onBlur}
+                                  value={selectedAuthorsList}
+                                  components={{
+                                    MultiValueContainer: (props) => (
+                                      <components.MultiValueContainer {...props}>
+                                        <div className="flex w-full">
+                                          {props.children}
+                                        </div>
+                                      </components.MultiValueContainer>
+                                    ),
+                                  }}
+                                  styles={{
+                                    input: (provided) => ({
+                                      ...provided,
+                                      position: `${
+                                        watch("title")?.length
+                                          ? "relative"
+                                          : "absolute"
+                                      }`,
+                                      left: 6,
+                                      marginRight: "60px",
+                                    }),
+                                    multiValue: (provided) => ({
+                                      ...provided,
+                                      height: "30px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      borderRadius: "6px",
+                                      minWidth: "none",
+                                    }),
+        
+                                    valueContainer: (provided) => ({
+                                      position: "relative",
+                                      maxWidth: "28vw",
+                                      width: "100%",
+                                      paddingLeft: "8px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      height: "40px",
+                                      overflowX: "auto",
+                                      "@media (max-width:600px)": {
+                                        maxWidth: "55vw",
+                                      },
+                                    }),
+                                    control: (provided) => ({
+                                      display: "flex",
+                                      // maxWidth:"37vw",
+                                      // width:"510px",
+                                      height: "40px",
+                                      alignItems: "center",
+                                      justifyContent: "space-between",
+                                      width: "100%",
+                                    }),
+                                    menuList:(provided) => ({
+                                      // ...provided,
+                                      maxHeight:"200px",
+                                      overflow:'hidden',
+                                      overflowY:"auto",
+                                    }),
+                                    clearIndicator:()=>({
+                                      marginLeft: "20px",
+                                      marginTop:"5px",
+                                      color:"gray"
+                                    })
+                                  }}
+                                  noOptionsMessage={() => "Author not found"}
+                                  className="border border-solid border-neutral-200 font-poppins rounded-lg  w-full lg:text-[14px] sm:text-[10px]"
+                                  onChange={(selectedOptions) =>
+                                    onChange(selectedOptions)
+                                  }
+                                  options={authorOptions || []}
+                                />
+                            )}
+                          />
                     </div>
                   </div>
                     

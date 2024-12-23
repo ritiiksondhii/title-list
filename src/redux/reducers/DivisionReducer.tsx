@@ -18,7 +18,7 @@ interface SeasonState {
   error: string | null;
   isLoading: boolean;
   selectedDivision?:string[];
-  selectedDivisionList?:OptionType[];
+  selectedDivisionList?:string[];
 }
 const initialState: SeasonState = {
   data: [],

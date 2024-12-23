@@ -1,40 +1,36 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API } from "../../constants/API";
+import { OptionType } from "./ISBNSReducer";
 
-export interface SeasonItem {
-  SEASON: string;
-  seasonName: string;
-  seasonYear: number;
+interface Author1datainterface {
+  AUTHOR_1:string;
 }
-interface OptionType {
-  value: string;
-  label: string;
-}
-interface SeasonState {
-  data: SeasonItem[];
+
+interface Author1State {
+  data: Author1datainterface[];
   status: string;
   statusCode: number;
   error: string | null;
   isLoading: boolean;
-  selectedSeason?:string[];
-  selectedSeasonList?:OptionType[];
+  Author1?:string[];
+  Author1List?:OptionType[];
 }
-const initialState: SeasonState = {
+const initialState: Author1State = {
   data: [],
   status: "",
   error: null,
   statusCode: 0,
   isLoading: false,
-  selectedSeason:[],
-  selectedSeasonList:[],
+  Author1:[],
+  Author1List:[],
 };
 
-export const FetchSeason = createAsyncThunk(
-  "FetchSeason",
+export const FetchAuthor1 = createAsyncThunk(
+  "FetchAuthor1",
   async (data:any, { rejectWithValue }) => {
     try {
-      const response = await axios.post(API.FETCHSEASON,data);
+      const response = await axios.post(API.FetchAuthor1,data);
       return response;
     } catch (err: any) {
       if (err.response && err.response.data) {
@@ -45,34 +41,34 @@ export const FetchSeason = createAsyncThunk(
   }
 );
 
-const SeasonSlice = createSlice({
-  name: "SeasonData",
+const Author1Slice = createSlice({
+  name: "Author1Data",
   initialState,
   reducers: {
-    UpdateSelectedSeason:(state,action)=>{
-      state.selectedSeason=action.payload
+    UpdateAuthor1:(state,action)=>{
+      state.Author1=action.payload
     },
-    UpdateSelectedSeasonList:(state,action)=>{
-      state.selectedSeasonList=action.payload
+    UpdateAuthor1List:(state,action)=>{
+      state.Author1List=action.payload
     }
   },
   extraReducers(builder) {
     builder
-      .addCase(FetchSeason.pending, (state) => {
+      .addCase(FetchAuthor1.pending, (state) => {
         state.isLoading = true;
         state.status = "Loading";
       })
-      .addCase(FetchSeason.fulfilled, (state, action) => {
+      .addCase(FetchAuthor1.fulfilled, (state, action) => {
         state.isLoading = false;
         state.status = "success";
         state.data = action.payload.data;
       })
-      .addCase(FetchSeason.rejected, (state) => {
+      .addCase(FetchAuthor1.rejected, (state) => {
         state.isLoading = false;
         state.status = "Failed";
         state.error = "Error";
       });
   },
 });
-export const { UpdateSelectedSeason,UpdateSelectedSeasonList}=SeasonSlice.actions
-export default SeasonSlice.reducer
+export const { UpdateAuthor1,UpdateAuthor1List}=Author1Slice.actions
+export default Author1Slice.reducer
