@@ -999,22 +999,22 @@ useEffect(() => {
               "US_PRICE",
               "estimatePubGoal",
               "TITLEPREFIXANDTITLE",
-              "EBOOK_ISBN","EAN"
+              "EBOOK_ISBN","EAN","BISAC1_DESC","BISAC_STATUS","CANADIAN_PRICE"
             ]}
             changedDataCellColumn={(header, accessor) => {
-              // if (accessor === "PUB_DATE" || accessor === "RELEASE_DATE") {
-              //   return {
-              //     accessorKey: accessor,
-              //     header: header,
-              //     Cell: ({ row }: { row: any }) => (
-              //       <div>
-              //         {row.original[accessor]?.length > 2
-              //           ? moment(row.original[accessor]).format("MM/DD/YYYY")
-              //           : " - "}
-              //       </div>
-              //     ),
-              //   };
-              // } else 
+              if (accessor === "PUB_DATE" || accessor === "RELEASE_DATE") {
+                return {
+                  accessorKey: accessor,
+                  header: header,
+                  Cell: ({ row }: { row: any }) => (
+                    <div>
+                      {row.original[accessor]?.length > 2
+                        ? moment(row.original[accessor]).format("MM/DD/YYYY")
+                        : " - "}
+                    </div>
+                  ),
+                };
+              } else 
               if (accessor == "FULL_TITLE")
                 return {
                   accessorKey: accessor,
@@ -1068,27 +1068,32 @@ useEffect(() => {
                     size: 50,
                   };
               
-              // else if (accessor == "totalCurrentEst") {
-              //   return {
-              //     accessorKey: accessor,
-              //     header: header,
-              //     Cell: ({ row }: { row: any }) => {
-              //       const value =
-              //         typeof row?.original?.totalCurrentEst === "number"
-              //           ? row?.original?.totalCurrentEst
-              //           : row?.original?.totalCurrentEst?.["$numberDecimal"];
-              //       const displayValue =
-              //         value || value === 0 ? `${value}` : "-";
-              //       return (
-              //         <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center ">
-              //           {/* {row.original.totalCurrentEst ? `${row.original.totalCurrentEst['$numberDecimal']}` : '-' } */}
-              //           {displayValue}
-              //         </div>
-              //       );
-              //     },
-              //     size: 50,
-              //   };
-              // } 
+                  else if (accessor == "BISAC1_DESC")
+                    return {
+                      accessorKey: accessor,
+                      header: header,
+                      Cell: ({ row }: { row: any }) => (
+                        <div className="overflow-auto">
+                        <div className="whitespace-nowrap max-w-[100px] w-[100px] ">
+                          {row.original[accessor]}
+                        </div>
+                        </div>
+                      ),
+                      size: 50,
+                    };
+                  else if (accessor == "BISAC_STATUS")
+                    return {
+                      accessorKey: accessor,
+                      header: header,
+                      Cell: ({ row }: { row: any }) => (
+                        <div className="overflow-auto">
+                        <div className="whitespace-nowrap max-w-[100px] w-[100px] ">
+                          {row.original[accessor]}
+                        </div>
+                        </div>
+                      ),
+                      size: 50,
+                    };
               // else if (accessor == "totalInitOrd") {
               //   return {
               //     accessorKey: accessor,
@@ -1127,22 +1132,22 @@ useEffect(() => {
               //     },
               //     size: 50,
               //   };
-              // } else if (accessor == "US_PRICE") {
-              //   return {
-              //     accessorKey: accessor,
-              //     header: header,
-              //     Cell: ({ row }: { row: any }) => {
-              //       // const price = parseFloat(row.original.US_PRICE).toFixed(2);
-              //       return (
-              //         <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center">
-              //           {" "}
-              //           {formatCurrency(row.original.US_PRICE)}{" "}
-              //         </div>
-              //       );
-              //     },
-              //     size: 50,
-              //   };
-              // }
+              else if (accessor == "US_PRICE" || accessor=="CANADIAN_PRICE"|| accessor=="UK_PRICE" ) {
+                return {
+                  accessorKey: accessor,
+                  header: header,
+                  Cell: ({ row }: { row: any }) => {
+                    // const price = parseFloat(row.original.US_PRICE).toFixed(2);
+                    return (
+                      <div className="whitespace-nowrap max-w-[300px] overflow-y-auto flex items-center justify-center">
+                        {" "}
+                        {formatCurrency(row.original.US_PRICE)}{" "}
+                      </div>
+                    );
+                  },
+                  size: 50,
+                };
+              }
               return {
                 accessorKey: accessor,
                 header: header,

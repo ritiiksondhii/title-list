@@ -90,7 +90,7 @@ const Profile = () => {
           dispatch(dontShowRole());
         }}
       >
-        {/* <Dropdown.item className="hover:bg-gray-100" onClick={logout}>
+        {/* <Dropdown.item className="hover:bg-gray-100" >
           <div className="flex gap-3 items-center">
             <MdLogout className="md:w-6 h-6 w-5 text-black" />
             <div className=" text-slate-700 text-[12px] md:text-[14px]">Log Out</div>

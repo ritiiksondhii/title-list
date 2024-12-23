@@ -79,7 +79,7 @@ const TopBar: React.FC<TopBarProps> = ({ show }) => {
         <div className="flex flex-col md:flex-row gap-5 justify-between items-center">
           <div className="flex items-center w-full justify-between">
             <div className="flex items-center gap-5  w-full">
-            <div className="flex items-center text-sm md:text-sm cursor-pointer gap-2">
+            {/* <div className="flex items-center text-sm md:text-sm cursor-pointer gap-2">
                 <svg
                   onClick={toggle}
                   className="w-5 h-5 md:w-6 md:h-6 text-gray-800 
@@ -102,7 +102,7 @@ const TopBar: React.FC<TopBarProps> = ({ show }) => {
                 {/* <span className="  lg:w-40 md:w-24 ">
                   {navItems.filter(nav => nav.path === pathname)[0]?.label}
                 </span> */}
-              </div>
+              {/* </div> */}
             </div>
             <div className="flex  gap-2 md:gap-3">
               {/* <Notifications /> */}
