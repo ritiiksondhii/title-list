@@ -179,15 +179,15 @@ useEffect(() => {
     !(selectedDivisionlist?.length ?? 0) &&
     !(selectedImprintlist?.length ?? 0) &&
     !(selectedIsbnsList?.length ?? 0) &&
-    !(selectedTitlesList?.length ?? 0);
+    !(selectedTitlesList?.length ?? 0) && 
+    !(selectedManagingEditors?.length??0 ) &&
+    !(selectedEditors?.length ??0) &&
+    !(selectedBisacStatus?.length??0);
   setButtonDisabled(isAllFieldsEmpty);
-}, [selectedSeasonlist, selectedDivisionlist, selectedImprintlist, selectedIsbnsList, selectedTitlesList]);
-
-
+}, [selectedSeasonlist, selectedDivisionlist, selectedImprintlist, selectedIsbnsList, selectedTitlesList,selectedManagingEditors,selectedEditors,selectedBisacStatus]);
   useEffect(() => {
     if(selectedSeasonlist?.length){
       setValue("season",selectedSeasonlist)
-     
     }
     if(selectedDivisionlist?.length){
       setValue("division",selectedDivisionlist)
@@ -202,6 +202,15 @@ useEffect(() => {
     if(selectedTitlesList?.length){
       setValue("title",selectedTitlesList)
     }
+    if(selectedManagingEditors?.length){
+      setValue("title",selectedManagingEditors)
+    }
+    if(selectedEditors?.length){
+      setValue("title",selectedEditors)
+    }
+    if(selectedBisacStatus?.length){
+      setValue("title",selectedBisacStatus)
+    }
     return () => {
       dispatch(emptyTitleListPage())
     }
@@ -214,6 +223,9 @@ useEffect(() => {
     setValue("imprint",[])
     setValue("isbn",[])
     setValue("title",[])
+    setValue("managingEditor",[])
+    setValue("editor",[])
+    setValue('bisac_status',[])
 
     // const seasonData = Array.isArray(watch("season"))
     //   ? watch("season").map((data) => data.value)
@@ -736,7 +748,7 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           {...field}
                           labelId="select-label"
                           multiple
-                          className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
+                          className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg"
                           renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
                           MenuProps={{
                             PaperProps: {
@@ -744,14 +756,26 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                                 maxHeight: 200,
                                 maxWidth:100,
                                 overflow: 'auto',
+
+                              },
+                            },
+                            MenuListProps: {
+                              style: {
+                                fontSize: '5px', 
                               },
                             },
                           }}
+                          
                         >
                           {options.map((option) => (
-                            <MenuItem key={option} value={option}>
+                            <MenuItem  key={option} value={option} >
                               <Checkbox checked={field.value.indexOf(option) > -1} />
-                              <ListItemText primary={option} />
+                              <ListItemText   
+                              primaryTypographyProps={{
+                                  style: {
+                                fontSize:"14px",
+                                  },
+                                }} primary={option} />
                             </MenuItem>
                           ))}
                         </Select>
@@ -789,7 +813,12 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           {DivisionOption.map((option) => (
                             <MenuItem key={option} value={option}>
                               <Checkbox checked={field.value.indexOf(option) > -1} />
-                              <ListItemText primary={option} />
+                              <ListItemText primary={option}
+                                 primaryTypographyProps={{
+                                  style: {
+                                fontSize:"14px",
+                                  },
+                                }} />
                             </MenuItem>
                           ))}
                         </Select>
@@ -908,7 +937,12 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           {ImprintOption.map((option) => (
                             <MenuItem key={option} value={option}>
                               <Checkbox checked={field.value.indexOf(option) > -1} />
-                              <ListItemText primary={option} />
+                              <ListItemText primary={option}  
+                              primaryTypographyProps={{
+                                  style: {
+                                fontSize:"14px",
+                                  },
+                                }} />
                             </MenuItem>
                           ))}
                         </Select>
@@ -1028,7 +1062,12 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           {managingEditorOptions.map((option) => (
                             <MenuItem key={option} value={option}>
                               <Checkbox checked={field.value.indexOf(option) > -1} />
-                              <ListItemText primary={option} />
+                              <ListItemText primary={option} 
+                                 primaryTypographyProps={{
+                                  style: {
+                                fontSize:"14px",
+                                  },
+                                }}/>
                             </MenuItem>
                           ))}
                         </Select>
@@ -1146,7 +1185,12 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           {editorOptions.map((option) => (
                             <MenuItem key={option} value={option}>
                               <Checkbox checked={field.value.indexOf(option) > -1} />
-                              <ListItemText primary={option} />
+                              <ListItemText primary={option} 
+                                 primaryTypographyProps={{
+                                  style: {
+                                fontSize:"14px",
+                                  },
+                                }}/>
                             </MenuItem>
                           ))}
                         </Select>
@@ -1264,7 +1308,12 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           {bisacStatusOptions.map((option) => (
                             <MenuItem key={option} value={option}>
                               <Checkbox checked={field.value.indexOf(option) > -1} />
-                              <ListItemText primary={option} />
+                              <ListItemText primary={option} 
+                                 primaryTypographyProps={{
+                                  style: {
+                                fontSize:"14px",
+                                  },
+                                }}/>
                             </MenuItem>
                           ))}
                         </Select>

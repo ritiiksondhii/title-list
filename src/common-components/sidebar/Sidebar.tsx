@@ -9,8 +9,8 @@ const Sidebar: React.FC = ({}) => {
   return (
     <aside
     className={`grid h-full  border-gray-300 
-  border-solid border-r-[1px] lg:w-full w-0 overflow-hidden bg-white lg:bg-transparent  `}
-    id={"sidebar-id"}
+  border-solid border-r-[1px] w-full  overflow-hidden bg-white lg:bg-transparent  `}
+    // id={"sidebar-id"}
   >
       <div className="text-[14px]  border-r  border-gray-200 ">
         <div className="flex flex-col flex-1 w-full shrink basis-0 h-screen">

@@ -12,7 +12,7 @@ interface managingEditorState {
   statusCode: number;
   error: string | null;
   isLoading: boolean;
-  managingEditor?:string[];
+  managingEditor?:string[] | any;
   managingEditorList?:string[];
 }
 const initialState: managingEditorState = {
