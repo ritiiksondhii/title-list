@@ -25,7 +25,7 @@ const DetailPagePdf: React.FC = () => {
   console.log(selectedImprint,'imprint');
   const params = useParams();
   useEffect(() => {
-    dispatch(FetchDetailsRecord({ id: params.id ? params.id : setDetails }));
+    dispatch(FetchDetailsRecord({ id: params.id ? params.id : setDetails ? setDetails : null }));
   }, [params.id]);
 
   const handleDownloadPdf = () => {

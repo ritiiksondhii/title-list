@@ -49,7 +49,16 @@ const managingEditorSlice = createSlice({
     },
     UpdatemanagingEditorList:(state,action)=>{
       state.managingEditorList=action.payload
-    }
+    },
+            emptyManagingEditorReducer:(state) => {
+              state.data = initialState.data;
+              state.status = initialState.status;
+              state.error = initialState.error;
+              state.statusCode = initialState.statusCode;
+              state.isLoading = initialState.isLoading;
+              state.managingEditor = initialState.managingEditor;
+              state.managingEditorList = initialState.managingEditorList;
+            }
   },
   extraReducers(builder) {
     builder
@@ -69,5 +78,5 @@ const managingEditorSlice = createSlice({
       });
   },
 });
-export const { UpdatemanagingEditor,UpdatemanagingEditorList}=managingEditorSlice.actions
+export const { UpdatemanagingEditor,UpdatemanagingEditorList,emptyManagingEditorReducer}=managingEditorSlice.actions
 export default managingEditorSlice.reducer

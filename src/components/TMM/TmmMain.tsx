@@ -12,15 +12,15 @@ import {
   emptyTitleListPage
 } from "../../redux/reducers/TitleListreducer";
 import { useNavigate } from "react-router-dom";
-import { FetchSeason,UpdateSelectedSeason,UpdateSelectedSeasonList } from "../../redux/reducers/SeasonReducer";
+import { emptySeasonReducer, FetchSeason,UpdateSelectedSeason,UpdateSelectedSeasonList } from "../../redux/reducers/SeasonReducer";
 import SelectList, { components } from "react-select";
-import { fetchDivision, UpdateSelectedDivision, UpdateSelectedDivisionList } from "../../redux/reducers/DivisionReducer";
-import { fetchImprint, UpdateSelectedImprint, UpdateSelectedImprintList } from "../../redux/reducers/ImprintReducer";
+import { emptyDivisionReducer, fetchDivision, UpdateSelectedDivision, UpdateSelectedDivisionList } from "../../redux/reducers/DivisionReducer";
+import { emptyImprintReducer, fetchImprint, UpdateSelectedImprint, UpdateSelectedImprintList } from "../../redux/reducers/ImprintReducer";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollTableData } from "../../common-components/common-material-react-table/function";
 import moment from "moment";
 import { MdCancel } from "react-icons/md";
-import { fetchIsbnList, ISBNData, setIsbnString, UpdateSelectedISBNS, UpdateSelectedISBNSList, UpdateSelectedTitles, UpdateSelectedTitlesList } from "../../redux/reducers/ISBNSReducer";
+import { emptyReducerStates, fetchIsbnList, ISBNData, setIsbnString, UpdateSelectedISBNS, UpdateSelectedISBNSList, UpdateSelectedTitles, UpdateSelectedTitlesList } from "../../redux/reducers/ISBNSReducer";
 import Loading from "../../common-components/Loader";
 import { formatCurrency } from "../../common-components/commonFunctions";
 import Alogo from '../../assets/images/logo.png'
@@ -37,10 +37,10 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
-import { FetchManagingEditor, UpdatemanagingEditor, UpdatemanagingEditorList } from "../../redux/reducers/managingEditorReducer";
-import { FetchEditor, UpdateEditor, UpdateEditorList } from "../../redux/reducers/editorReducer";
-import { FetchbisacStatus, UpdatebisacStatus, UpdatebisacStatusList } from "../../redux/reducers/BisanStatusReducer";
-import { FetchAuthor1, UpdateAuthor1, UpdateAuthor1List } from "../../redux/reducers/AUTHOR1Reducer";
+import { emptyManagingEditorReducer, FetchManagingEditor, UpdatemanagingEditor, UpdatemanagingEditorList } from "../../redux/reducers/managingEditorReducer";
+import { emptyEditorReducer, FetchEditor, UpdateEditor, UpdateEditorList } from "../../redux/reducers/editorReducer";
+import { emptyBisacStatusReducer, FetchbisacStatus, UpdatebisacStatus, UpdatebisacStatusList } from "../../redux/reducers/BisanStatusReducer";
+import { emptyAuthorReducer, FetchAuthor1, UpdateAuthor1, UpdateAuthor1List } from "../../redux/reducers/AUTHOR1Reducer";
 
 interface OptionType {
   value: string;
@@ -216,6 +216,14 @@ useEffect(() => {
     }
     return () => {
       dispatch(emptyTitleListPage())
+      dispatch(emptyReducerStates())
+      dispatch(emptyAuthorReducer())
+      dispatch(emptySeasonReducer())
+      dispatch(emptyDivisionReducer());
+      dispatch(emptyImprintReducer())
+      dispatch(emptyManagingEditorReducer())
+      dispatch(emptyEditorReducer())
+      dispatch(emptyBisacStatusReducer())
     }
   }, []);
 
@@ -752,7 +760,7 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           labelId="select-label"
                           multiple
                           className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg"
-                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          renderValue={(selected: string[]) =>selected?.length > 1 ? "Multi Selected" : selected.join(", ")} // Ensure the selected value is correctly rendered
                           MenuProps={{
                             PaperProps: {
                               style: {
@@ -802,7 +810,7 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           labelId="select-label"
                           multiple
                           className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
-                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          renderValue={(selected: string[]) => selected?.length > 1 ? "Multi Selected" :selected.join(", ")} // Ensure the selected value is correctly rendered
                           MenuProps={{
                             PaperProps: {
                               style: {
@@ -926,7 +934,7 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           labelId="select-label"
                           multiple
                           className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
-                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          renderValue={(selected: string[]) => selected?.length > 1 ? "Multi Selected" :selected.join(", ")} // Ensure the selected value is correctly rendered
                           MenuProps={{
                             PaperProps: {
                               style: {
@@ -1052,7 +1060,7 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           labelId="select-label"
                           multiple
                           className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
-                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          renderValue={(selected: string[]) => selected?.length > 1 ? "Multi Selected" : selected.join(", ")} // Ensure the selected value is correctly rendered
                           MenuProps={{
                             PaperProps: {
                               style: {
@@ -1212,7 +1220,7 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           labelId="select-label"
                           multiple
                           className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
-                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          renderValue={(selected: string[]) => selected?.length > 1 ? "Multi Selected" :selected.join(", ")} // Ensure the selected value is correctly rendered
                           MenuProps={{
                             PaperProps: {
                               style: {
@@ -1335,7 +1343,7 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                           labelId="select-label"
                           multiple
                           className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
-                          renderValue={(selected: string[]) => selected.join(", ")} // Ensure the selected value is correctly rendered
+                          renderValue={(selected: string[]) => selected?.length > 1 ? "Multi Selected" :selected.join(", ")} // Ensure the selected value is correctly rendered
                           MenuProps={{
                             PaperProps: {
                               style: {

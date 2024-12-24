@@ -54,6 +54,15 @@ const SeasonSlice = createSlice({
     },
     UpdateSelectedSeasonList:(state,action)=>{
       state.selectedSeasonList=action.payload
+    },
+    emptySeasonReducer:(state) => {
+      state.data = initialState.data;
+      state.status = initialState.status;
+      state.error = initialState.error;
+      state.statusCode = initialState.statusCode;
+      state.isLoading = initialState.isLoading;
+      state.selectedSeason = initialState.selectedSeason;
+      state.selectedSeasonList = initialState.selectedSeasonList;
     }
   },
   extraReducers(builder) {
@@ -74,5 +83,5 @@ const SeasonSlice = createSlice({
       });
   },
 });
-export const { UpdateSelectedSeason,UpdateSelectedSeasonList}=SeasonSlice.actions
+export const { UpdateSelectedSeason,UpdateSelectedSeasonList,emptySeasonReducer}=SeasonSlice.actions
 export default SeasonSlice.reducer

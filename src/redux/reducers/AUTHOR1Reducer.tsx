@@ -50,6 +50,14 @@ const Author1Slice = createSlice({
     },
     UpdateAuthor1List:(state,action)=>{
       state.Author1List=action.payload
+    },
+    emptyAuthorReducer:(state) => {
+      state.data = initialState.data;
+      state.status = initialState.status;
+      state.error = initialState.error;
+      state.isLoading = initialState.isLoading;
+      state.Author1 = initialState.Author1;
+      state.Author1List = initialState.Author1List;
     }
   },
   extraReducers(builder) {
@@ -70,5 +78,5 @@ const Author1Slice = createSlice({
       });
   },
 });
-export const { UpdateAuthor1,UpdateAuthor1List}=Author1Slice.actions
+export const { UpdateAuthor1,UpdateAuthor1List, emptyAuthorReducer}=Author1Slice.actions
 export default Author1Slice.reducer

@@ -72,6 +72,7 @@ const TitleListSlice = createSlice({
       state.error = initialState.error;
       state.isLoading = initialState.isLoading;
       state.limit = initialState.limit;
+      state.hasMore = initialState.hasMore;
     },
     UpdatePagination: (state) => {
       state.page = state.page + 1

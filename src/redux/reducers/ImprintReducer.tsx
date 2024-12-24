@@ -54,7 +54,16 @@ const ImprintSlice = createSlice({
     },
     UpdateSelectedImprintList:(state,action)=>{
       state.selectedImprintList=action.payload
-    }
+    },
+        emptyImprintReducer:(state) => {
+          state.data = initialState.data;
+          state.status = initialState.status;
+          state.error = initialState.error;
+          state.statusCode = initialState.statusCode;
+          state.isLoading = initialState.isLoading;
+          state.selectedImprint = initialState.selectedImprint;
+          state.selectedImprintList = initialState.selectedImprintList;
+        }
   },
   extraReducers(builder) {
     builder
@@ -74,5 +83,5 @@ const ImprintSlice = createSlice({
       });
   },
 });
-export const {UpdateSelectedImprint, UpdateSelectedImprintList} = ImprintSlice.actions;
+export const {UpdateSelectedImprint, UpdateSelectedImprintList,emptyImprintReducer} = ImprintSlice.actions;
 export default ImprintSlice.reducer;

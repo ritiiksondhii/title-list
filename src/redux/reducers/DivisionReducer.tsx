@@ -54,6 +54,15 @@ const DivisionSlice = createSlice({
     },
     UpdateSelectedDivisionList:(state,action)=>{
       state.selectedDivisionList=action.payload
+    },
+    emptyDivisionReducer:(state) => {
+      state.data = initialState.data;
+      state.status = initialState.status;
+      state.error = initialState.error;
+      state.statusCode = initialState.statusCode;
+      state.isLoading = initialState.isLoading;
+      state.selectedDivision = initialState.selectedDivision;
+      state.selectedDivisionList = initialState.selectedDivisionList;
     }
   },
   extraReducers(builder) {
@@ -74,5 +83,5 @@ const DivisionSlice = createSlice({
       });
   },
 });
-export const { UpdateSelectedDivision, UpdateSelectedDivisionList}=DivisionSlice.actions
+export const { UpdateSelectedDivision, UpdateSelectedDivisionList,emptyDivisionReducer}=DivisionSlice.actions
 export default DivisionSlice.reducer

@@ -49,7 +49,16 @@ const bisacStatusSlice = createSlice({
     },
     UpdatebisacStatusList:(state,action)=>{
       state.bisacStatusList=action.payload
-    }
+    },
+                emptyBisacStatusReducer:(state) => {
+                  state.data = initialState.data;
+                  state.status = initialState.status;
+                  state.error = initialState.error;
+                  state.statusCode = initialState.statusCode;
+                  state.isLoading = initialState.isLoading;
+                  state.bisacStatus = initialState.bisacStatus;
+                  state.bisacStatusList = initialState.bisacStatusList;
+                }
   },
   extraReducers(builder) {
     builder
@@ -69,5 +78,5 @@ const bisacStatusSlice = createSlice({
       });
   },
 });
-export const { UpdatebisacStatus,UpdatebisacStatusList}=bisacStatusSlice.actions
+export const { UpdatebisacStatus,UpdatebisacStatusList,emptyBisacStatusReducer}=bisacStatusSlice.actions
 export default bisacStatusSlice.reducer

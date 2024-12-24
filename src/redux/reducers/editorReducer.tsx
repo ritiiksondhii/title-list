@@ -49,7 +49,16 @@ const EditorSlice = createSlice({
     },
     UpdateEditorList:(state,action)=>{
       state.EditorList=action.payload
-    }
+    },
+                emptyEditorReducer:(state) => {
+                  state.data = initialState.data;
+                  state.status = initialState.status;
+                  state.error = initialState.error;
+                  state.statusCode = initialState.statusCode;
+                  state.isLoading = initialState.isLoading;
+                  state.Editor = initialState.Editor;
+                  state.EditorList = initialState.EditorList;
+                }
   },
   extraReducers(builder) {
     builder
@@ -69,5 +78,5 @@ const EditorSlice = createSlice({
       });
   },
 });
-export const { UpdateEditor,UpdateEditorList}=EditorSlice.actions
+export const { UpdateEditor,UpdateEditorList,emptyEditorReducer}=EditorSlice.actions
 export default EditorSlice.reducer

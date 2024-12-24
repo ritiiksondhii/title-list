@@ -128,6 +128,20 @@ export const newIsbnSlice = createSlice({
     },
     emptyAccountsScrollPosition:(state) => {
       state.accounts.accountNumberScrollPosition = initialState.accounts.accountNumberScrollPosition;
+    },
+    emptyReducerStates:(state) => {
+      state.err = initialState.err;
+      state.status = initialState.status;
+      state.message = initialState.message;
+      state.statusCode = initialState.statusCode;
+      state.isbns = initialState.isbns;
+      state.isbnsString = initialState.isbnsString;
+      state.selectedISBNS = initialState.selectedISBNS;
+      state.selectedISBNSList = initialState.selectedISBNSList;
+      state.selectedTitles = initialState.selectedTitles;
+      state.selectedTitlesList = initialState.selectedTitlesList;
+      state.isLoading = initialState.isLoading;
+      state.accounts = initialState.accounts;
     }
   },
   extraReducers: (builder) => {
@@ -179,7 +193,8 @@ export const {
   updateAccountPage,
   updateScrollPosition,
   updateSearchStr,
-  emptyAccountsScrollPosition
+  emptyAccountsScrollPosition,
+  emptyReducerStates
 } = newIsbnSlice.actions;
 
 export const ISBNData = (state: RootState) => state.isbnReducer.isbns;
