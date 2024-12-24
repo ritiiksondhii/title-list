@@ -8,6 +8,7 @@ import {
   setDetails,
 } from "../../redux/reducers/DetailPageReducer";
 import { useParams } from "react-router-dom";
+import ResumePDFGenerator from "./generatePdf";
 
 const DetailPagePdf: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,6 +36,7 @@ const DetailPagePdf: React.FC = () => {
           Download
         </button> */}
         <div id="section1" style={{ height: "279mm" }}>
+        <ResumePDFGenerator data={DetailData}/>
           <div className="bg-gradient-to-r from-red-500 text-white flex justify-between items-center px-6 py-4 mb-4 ">
             <h1 className="text-xl font-bold text-white">Amulet Books</h1>
             <span className="text-sm text-red-900">Fall 2025</span>
