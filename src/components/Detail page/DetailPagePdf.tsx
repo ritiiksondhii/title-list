@@ -8,8 +8,9 @@ import {
   setDetails,
 } from "../../redux/reducers/DetailPageReducer";
 import { useParams } from "react-router-dom";
-import ResumePDFGenerator from "./generatePdf";
+// import ResumePDFGenerator from "./generatePdf";
 import moment from "moment";
+import ResumePDFGenerator from "./genaeratPdf";
 
 const DetailPagePdf: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,10 +40,11 @@ const DetailPagePdf: React.FC = () => {
         {/* <button className="bg-red-400 px-2 py-2" onClick={handleDownloadPdf}>
           Download
         </button> */}
-        <ResumePDFGenerator data={DetailData}/>
+        {/* <ResumePDFGenerator data={DetailData}/> */}
+        <ResumePDFGenerator data={DetailData} />
         <div id="section1" style={{ height: "279mm" }} >
           <div className="bg-gradient-to-r from-red-500 text-white flex justify-between items-center px-6 py-4 mb-4 ">
-            <h1 className="text-xl font-bold text-white">{selectedImprint} </h1>
+            <h1 className="text-xl font-bold text-white">{DetailData.TESTIMPRINTFROMHNA} </h1>
             <span className="text-sm text-red-900">Fall 2025</span>
           </div>
           <div className="max-w-6xl mb-20 bg-white border border-black p-6 shadow-md ">
@@ -140,7 +142,8 @@ const DetailPagePdf: React.FC = () => {
                 </p>
                 <p className="text-sm py-2 flex">
                   <span className="font-semibold  w-[150px]">ORIGIN</span>{" "}
-                  <p>235678</p>
+                  {/* <p>235678</p> */}
+                
                 </p>
                 <p className="text-sm py-2 flex">
                   <span className="font-semibold  w-[150px]">

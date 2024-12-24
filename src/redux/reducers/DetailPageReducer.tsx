@@ -4,7 +4,7 @@ import { API } from "../../constants/API";
 import { downloadPdfData } from "../../common-components/commonFunctions";
 
 interface Detailinterface {
-  imprint: any;
+  TESTIMPRINTFROMHNA: any;
   EDITOR:any;
   EAN:any,
   Season: any;
@@ -49,7 +49,7 @@ const initialState: DetailState = {
   data: {
     EAN:"",
     AUTHOR_1:"",
-    imprint: null,
+    TESTIMPRINTFROMHNA: null,
     Season: null,
     ISBN: null,
     FULL_TITLE: null,
