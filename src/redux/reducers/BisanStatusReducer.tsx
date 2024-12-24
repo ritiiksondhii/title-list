@@ -12,7 +12,7 @@ interface bisacStatusState {
   statusCode: number;
   error: string | null;
   isLoading: boolean;
-  bisacStatus?:string[];
+  bisacStatus?:string[] | any;
   bisacStatusList?:string[];
 }
 const initialState: bisacStatusState = {

@@ -9,6 +9,7 @@ import {
 } from "../../redux/reducers/DetailPageReducer";
 import { useParams } from "react-router-dom";
 import ResumePDFGenerator from "./generatePdf";
+import moment from "moment";
 
 const DetailPagePdf: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,7 +19,10 @@ const DetailPagePdf: React.FC = () => {
   const setDetails = useSelector(
     (state: RootState) => state.detailPageReducer.selectedDetail
   );
-  console.log(setDetails);
+   const selectedImprint = useSelector(
+      (state: RootState) => state.ImprintReducer.selectedImprint
+    );
+  console.log(selectedImprint,'imprint');
   const params = useParams();
   useEffect(() => {
     dispatch(FetchDetailsRecord({ id: params.id ? params.id : setDetails }));
@@ -35,10 +39,10 @@ const DetailPagePdf: React.FC = () => {
         {/* <button className="bg-red-400 px-2 py-2" onClick={handleDownloadPdf}>
           Download
         </button> */}
-        <div id="section1" style={{ height: "279mm" }}>
         <ResumePDFGenerator data={DetailData}/>
+        <div id="section1" style={{ height: "279mm" }} >
           <div className="bg-gradient-to-r from-red-500 text-white flex justify-between items-center px-6 py-4 mb-4 ">
-            <h1 className="text-xl font-bold text-white">Amulet Books</h1>
+            <h1 className="text-xl font-bold text-white">{selectedImprint} </h1>
             <span className="text-sm text-red-900">Fall 2025</span>
           </div>
           <div className="max-w-6xl mb-20 bg-white border border-black p-6 shadow-md ">
@@ -263,143 +267,83 @@ const DetailPagePdf: React.FC = () => {
                 alt=""
                 className="w-full max-w-36 h-18 object-cover "
               />
-              <span className="text-sm text-gray-500"> date </span>
-              <span className="text-sm text-gray-500">Page 1 of 3</span>
+              <span className="text-sm text-gray-500"> {moment(DetailData.PUB_DATE).format("MM/DD/YYYY")} </span>
+              <span className="text-sm text-gray-500">Page 1 of 2</span>
             </div>
           </div>
         </div>
-        <div id="section2" className=" overflow-y-auto  pb-4 relative">
-          <div className="bg-gradient-to-r from-red-500 text-white flex justify-between items-center px-6 py-4 mb-4 ">
-            <h1 className="text-xl font-bold text-white ">Amulet Books</h1>
-            <span className="text-sm text-red-900">Fall 2025</span>
+       {
+        DetailData.MARKETING_BULLETS__FACT_SHEET || DetailData.PUBLICITY || DetailData.CATEGORY1 || DetailData.CATEGORY2 || DetailData.CATEGORY3 || DetailData.AUTHOR_1 ?  <div id="section2" className=" overflow-y-auto  pb-4 relative">
+        <div className="bg-gradient-to-r from-red-500 text-white flex justify-between items-center px-6 py-4 mb-4  ">
+          <h1 className="text-xl font-bold text-white">{selectedImprint} </h1>
+          <span className="text-sm text-red-900">Fall 2025</span>
+        </div>
+        <div
+          style={{
+            boxShadow: "5px 5px 5px 10px rgba(0, 0, 0, 0.3)",
+            height: "279mm",
+          }}
+          className="max-w-6xl overflow-auto mb-20 bg-white border border-black p-6 shadow-md "
+        >
+          {/* Title Section */}
+
+          {/* Keywords Section */}
+          {
+            DetailData.AUTHOR_1 &&  <div className="mb-6">
+            <h3 className="text-[14px] font-semibold mb-2">
+              Contributor Bio :{" "}
+            </h3>
+            <p className="text-sm text-gray-700">
+              {DetailData.AUTHOR_BIO ? DetailData.AUTHOR_BIO : "-"}
+            </p>
           </div>
-          <div
-            style={{
-              boxShadow: "5px 5px 5px 10px rgba(0, 0, 0, 0.3)",
-              height: "279mm",
-            }}
-            className="max-w-6xl mb-20 bg-white border border-black p-6 shadow-md "
-          >
-            {/* Title Section */}
-
-            {/* Keywords Section */}
-            <div className="mb-6">
-              <h3 className="text-[14px] font-semibold mb-2">
-                Contributor Bio :{" "}
-              </h3>
-              <p className="text-sm text-gray-700">
-                {DetailData.AUTHOR_BIO ? DetailData.AUTHOR_BIO : "-"}
-              </p>
-            </div>
-            <div className="mb-6">
-              <h3 className="text-[14px] font-semibold mb-2">Marketing:</h3>
-              <p className="text-[14px]">
-                {DetailData.MARKETING_BULLETS__FACT_SHEET
-                  ? DetailData.MARKETING_BULLETS__FACT_SHEET
-                  : "-"}
-              </p>
-            </div>
-            {/* Description */}
-            <div>
-              <h3 className="text-[14px]  font-semibold mb-2">Publicity:</h3>
-              <p className="text-sm ">
-                {DetailData.PUBLICITY ? DetailData.PUBLICITY : "-"}
-              </p>
-            </div>
-            <div>
-              <h3 className="text-[14px] font-semibold mb-2">Category(s):</h3>
-              <p className="text-sm text-gray-700">
-                {DetailData.CATEGORY1 ? DetailData.CATEGORY1 : "-"}
-                {DetailData.CATEGORY2 ? DetailData.CATEGORY2 : "-"}
-                {DetailData.CATEGORY3 ? DetailData.CATEGORY3 : "-"}
-              </p>
-            </div>
-            {/* <div className="mb-6">
-              <h3 className="text-[14px] font-semibold mb-2">
-                Contributor Residence:
-              </h3>
-              {/* <p> 23456780o</p> */}
-            {/* </div> */}
-            {/* <div className="mb-6"> */}
-            {/* <h3 className="text-[14px] font-semibold mb-2">Comp Titles:</h3> */}
-            {/* <ul className=" pl-5 text-sm text-gray-700 list-none">
-                <li className="py-4">
-                  <p className="font-semibold text-black ">
-                    {" "}
-                    FILM BUZZ :
-                    <span className="font-normal">
-                      Movie currently in production with Universal and Temple
-                      Hill, the production studio behind the success of book
-                      adaptations like Twilight, Maze Runner, and The Hate U
-                      Give.
-                    </span>
-                  </p>
-                </li>
-                <li className="py-4">
-                  <p className="font-semibold text-black">
-                    {" "}
-                    BESTSELLING AUTHOR:
-                    <span className="font-normal">
-                      The Lightlark Saga (Book 2) was an instant #1 New York
-                      Times bestseller, with tremendous anticipation for the
-                      series finale. Book 1 was also featured as a Good Morning
-                      America Book Club Pick and a Books-A-Million Club Pick.
-                    </span>
-                  </p>
-                </li>
-                <li className="py-4">
-                  <p className="font-semibold text-black">
-                    SOCIAL MEDIA REACH:
-                    <span className="font-normal">
-                      The Lightlark Saga (Book 2) was an instant #1 New York
-                      Times bestseller, with tremendous anticipation for the
-                      series finale. Book 1 was also featured as a Good Morning
-                      America Book Club Pick and a Books-A-Million Club Pick.
-                    </span>
-                  </p>
-                </li>
-                <li className="py-4">
-                  <p className="font-semibold text-black">
-                    MEDIA DARLING:
-                    <span className="font-normal">
-                      The Lightlark Saga (Book 2) was an instant #1 New York
-                      Times bestseller, with tremendous anticipation for the
-                      series finale. Book 1 was also featured as a Good Morning
-                      America Book Club Pick and a Books-A-Million Club Pick.
-                    </span>
-                  </p>
-                </li>
-              </ul> */}
-            {/* </div> */}
-            {/* Description */}
-            {/* <div>
-              <h3 className="text-[14px] font-semibold mb-2">Qutoes:</h3> */}
-            {/* <p>Praise for Lightlark</p>
-              <p className="text-sm text-gray-700">
-                Black rain drips on Nightshade. Isla is reeling in the wake of a
-                brutal battle and the devastating truths it exposed. Her allies
-                have turned into traitors—who now reign on an island built of
-                lies and Black rain drips on Nightshade. Isla is reeling in the
-                wake of a brutal battle and the devastating truths it exposed.
-                Her allies have turned into traitors—who now reign on an island
-                built of lies and
-              </p> */}
-            {/* </div> */}
-
-            {/* Footer */}
-            <div className="absolute bottom-[120px] w-full">
-              <div className="flex justify-between w-[95%] items-center border-t border-gray-300 pt-4">
-                <img
-                  src={Alogo}
-                  alt=""
-                  className="w-full max-w-36 h-18 object-cover "
-                />
-                <span className="text-sm text-gray-500"> date </span>
-                <span className="text-sm text-gray-500">Page 2 of 3</span>
-              </div>
+          }
+         {
+          DetailData.MARKETING_BULLETS__FACT_SHEET &&  <div className="mb-6">
+          <h3 className="text-[14px] font-semibold mb-2">Marketing:</h3>
+          <p className="text-[14px]">
+            {DetailData.MARKETING_BULLETS__FACT_SHEET
+              ? DetailData.MARKETING_BULLETS__FACT_SHEET
+              : "-"}
+          </p>
+        </div>
+         }
+         
+          {/* Description */}
+          {
+            DetailData.PUBLICITY &&     <div>
+            <h3 className="text-[14px]  font-semibold mb-2">Publicity:</h3>
+            <p className="text-sm ">
+              {DetailData.PUBLICITY ? DetailData.PUBLICITY : "-"}
+            </p>
+          </div>
+          }
+      {
+        DetailData.CATEGORY1 || DetailData.CATEGORY2 || DetailData.CATEGORY3 ?
+        <div>
+            <h3 className="text-[14px] font-semibold mb-2">Category(s):</h3>
+            <p className="text-sm text-gray-700">
+              {DetailData.CATEGORY1 ? DetailData.CATEGORY1 : "-"}
+              {DetailData.CATEGORY2 ? DetailData.CATEGORY2 : "-"}
+              {DetailData.CATEGORY3 ? DetailData.CATEGORY3 : "-"}
+            </p>
+          </div> :""
+      }
+          
+          <div className="absolute bottom-[120px] w-full">
+            <div className="flex justify-between w-[95%] items-center border-t border-gray-300 pt-4">
+              <img
+                src={Alogo}
+                alt=""
+                className="w-full max-w-36 h-18 object-cover "
+              />
+              <span className="text-sm text-gray-500">{moment(DetailData.PUB_DATE).format("MM/DD/YYYY")} </span>
+              <span className="text-sm text-gray-500">Page 2 of 3</span>
             </div>
           </div>
         </div>
+      </div>:null
+       }
       </div>
     </div>
   );

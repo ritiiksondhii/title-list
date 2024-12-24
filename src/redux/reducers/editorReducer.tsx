@@ -12,7 +12,7 @@ interface EditorState {
   statusCode: number;
   error: string | null;
   isLoading: boolean;
-  Editor?:string[];
+  Editor?:string[] | any;
   EditorList?:string[];
 }
 const initialState: EditorState = {
