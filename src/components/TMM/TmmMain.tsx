@@ -27,12 +27,15 @@ import Alogo from '../../assets/images/logo.png'
 import { PostpdfData, setDetails } from "../../redux/reducers/DetailPageReducer";
 import { FaDownload, FaEye } from "react-icons/fa";
 import {
+  Autocomplete,
   Checkbox,
+  Chip,
   InputLabel,
   ListItemText,
   MenuItem,
   Select,
   SelectChangeEvent,
+  TextField,
 } from "@mui/material";
 import { FetchManagingEditor, UpdatemanagingEditor, UpdatemanagingEditorList } from "../../redux/reducers/managingEditorReducer";
 import { FetchEditor, UpdateEditor, UpdateEditorList } from "../../redux/reducers/editorReducer";
@@ -1001,6 +1004,7 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
           <div className="w-full">
             <p className="text-[#e31c23] font-bold ">Managing Editor</p>
             <div className="w-full grid grid-cols-1">
+
             <Controller
                       name="managingEditor"
                       control={control}
@@ -1034,6 +1038,43 @@ const bisacStatusOptions = bisacStatusData.map((bisacStatus) => (
                         </Select>
                       )}
                     />
+
+            {/* <Controller
+  name="managingEditor"
+  control={control}
+  defaultValue={[]}
+  rules={{
+    onChange: () => handleTitleListRecordsFilterFetch(),
+  }}
+  render={({ field }) => (
+    <Autocomplete
+      multiple
+      options={managingEditorOptions}
+      value={field.value}
+      onChange={(event, newValue) => field.onChange(newValue)} // Updates the form state
+      filterSelectedOptions
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          label="Managing Editor"
+          placeholder="Select..."
+          className="border border-solid h-[45px] w-full border-neutral-300 font-poppins rounded-lg lg:text-[14px] sm:text-[9.9px]"
+        />
+      )}
+      renderTags={(tagValue, getTagProps) =>
+        tagValue.map((option, index) => (
+          <Chip
+            label={option}
+            {...getTagProps({ index })} // This includes the unique key
+            className="m-1 font-poppins"
+          />
+        ))
+      }
+    />
+  )}
+/> */}
+
               {/* <Controller
                 name="imprint"
                 control={control}

@@ -17,5 +17,9 @@ export const API = {
     FetchEditor: "title_list/FetchEditor",
     FetchBisacStatus: "title_list/FetchBisacStatus",
     FetchAuthor1: "title_list/FetchAuthor1",
+    // FetchManagingEditor:"title_list/FetchManagingEditor",
+    // FetchEditor: "title_list/FetchEditor",
+    // FetchBisacStatus: "title_list/FetchBisacStatus",
+    // FetchAuthor1: "title_list/FetchAuthor1"
   };
   
