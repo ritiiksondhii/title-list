@@ -257,9 +257,9 @@ const DetailPagePdf: React.FC = () => {
             {/* </div> */}
 
             {/* Description */}
-            <div>
+            <div className="max-h-[100px] h-[100px] overflow-y-auto ">
               <h3 className="text-[14px] font-semibold mb-2">Description:</h3>
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-gray-700  ">
                 {DetailData.DESCRIPTION ? DetailData.DESCRIPTION : "-"}
               </p>
             </div>
@@ -291,18 +291,17 @@ const DetailPagePdf: React.FC = () => {
           {/* Title Section */}
 
           {/* Keywords Section */}
-          {
-            DetailData.AUTHOR_1 &&  <div className="mb-6">
-            <h3 className="text-[14px] font-semibold mb-2">
+          
+            <div className={`mb-6 ${DetailData.AUTHOR_BIO.trim().length>=1? "max-h-[150px] h-[150px] overflow-y-auto ":""}`}>
+            <h3 className={`text-[14px] font-semibold mb-2 `}>
               Contributor Bio :{" "}
             </h3>
             <p className="text-sm text-gray-700">
               {DetailData.AUTHOR_BIO ? DetailData.AUTHOR_BIO : "-"}
             </p>
           </div>
-          }
-         {
-          DetailData.MARKETING_BULLETS__FACT_SHEET &&  <div className="mb-6">
+          
+         <div className="mb-6">
           <h3 className="text-[14px] font-semibold mb-2">Marketing:</h3>
           <p className="text-[14px]">
             {DetailData.MARKETING_BULLETS__FACT_SHEET
@@ -310,7 +309,7 @@ const DetailPagePdf: React.FC = () => {
               : "-"}
           </p>
         </div>
-         }
+         
          
           {/* Description */}
           {
