@@ -1,78 +1,93 @@
 import React from "react";
 import { jsPDF } from "jspdf";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import Alogo from "../../assets/images/Abrams.png";
 import moment from "moment";
 
 const ResumePDFGenerator = (data: any) => {
   const generatePDF = async () => {
     console.log("Data passed to PDF generator:", data.data.EAN);
-    // Create new jsPDF instance
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
       format: "a4",
     });
-
-    const pageHeight = doc.internal.pageSize.height;
-    let marginTop = 10;
-    const marginBottom = 10;
+    let marginTop = 15;
+    let marginBottom = 10;
     var currentY = marginTop;
-    const checkAndAddPage = (lineHeight: any) => {
-      // Create gradient header
+    const checkAndAddPage = (
+      doc: any,
+      currentY: any,
+      lineHeight: any,
+      marginBottom: any,
+      footerHeight: any
+    ) => {
+      const pageHeight = doc.internal.pageSize.height;
+      let pageWidth = doc.internal.pageSize.getWidth();
+      const marginPadding = 3;
+      const headerHeight = 10;
+      const headerBottomPadding = 3;
+      const contentHeight =
+        pageHeight - headerHeight - footerHeight - 1 * marginPadding;
+      const contentTop = headerHeight + marginPadding + headerBottomPadding;
+      const availableHeight =
+        pageHeight -
+        marginBottom -
+        footerHeight -
+        headerBottomPadding -
+        1 * marginPadding;
+
+      doc.setLineWidth(0.1);
+      doc.setDrawColor(0, 0, 0);
+      doc.rect(
+        marginPadding,
+        contentTop,
+        pageWidth - 2 * marginPadding,
+        contentHeight
+      );
       const canvas = document.createElement("canvas");
       canvas.width = 2100;
       canvas.height = 100;
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        // Create gradient
         const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
         gradient.addColorStop(0, "#E74C3C");
         gradient.addColorStop(1, "#FFF5F5");
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        //   doc.setTextColor(0, 0, 0);
-
-        //   doc.setFontSize(12); // Reduced font size to fit smaller header
-        //   doc.text("data.data.TESTIMPRINTFROMHNA", 10, 12);
-
-        // Add gradient to PDF
         try {
           doc.addImage(
             canvas.toDataURL("23456789"),
             "JPEG",
-            0, // x coordinate
-            0, // y coordinate
-            210, // width (A4 width in mm)
-            10, // height (reduced to 10mm)
-            undefined,
-            "FAST"
+            marginPadding,
+            marginPadding,
+            pageWidth - 2 * marginPadding,
+            headerHeight
+            // undefined,
+            // "FAST"
           );
           doc.setTextColor(255, 255, 255);
-
           doc.setFontSize(14);
-          const pageWidth = doc.internal.pageSize.getWidth();
           const leftText = data.data.TESTIMPRINTFROMHNA;
           const rightText = "Fall 2025";
           const leftTextX = 10;
           const rightTextX = pageWidth - 10 - doc.getTextWidth(rightText);
-          doc.text(leftText, leftTextX, 7);
+          doc.text(leftText, leftTextX, 10);
           doc.setTextColor(0, 0, 0);
           doc.setFontSize(8);
-          doc.text(rightText, rightTextX, 7);
+          doc.text(rightText, rightTextX, 10);
           doc.setTextColor(0, 0, 0);
           doc.setFontSize(10);
         } catch (error) {
           console.error("Error adding gradient:", error);
         }
       }
-      if (currentY + lineHeight > pageHeight - marginBottom) {
+
+      if (currentY + lineHeight > availableHeight) {
         doc.addPage();
-        marginTop = 20;
-        currentY = marginTop;
+        return 20;
       }
+      return currentY;
     };
+
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(8);
     const leftColumnX = 10;
@@ -82,13 +97,11 @@ const ResumePDFGenerator = (data: any) => {
     const fields = [
       { key: "ISBN", value: data.data.EAN || "-" },
       { key: "TITLE", value: data.data.FULL_TITLE || "-" },
-      // Add more fields as needed
     ];
     const keyFontSize = 10;
     const valueFontSize = 10;
     const lineHeight = 7;
     fields.forEach(({ key, value }) => {
-      // Set font for key (bold)
       doc.setFont("helvetica", "bold");
       doc.setFontSize(keyFontSize);
       doc.text(`${key}:`, leftColumnX, currentY);
@@ -100,20 +113,13 @@ const ResumePDFGenerator = (data: any) => {
     });
     const imageUrl = data?.data?.IMAGE_URL;
     if (imageUrl) {
-      const imageX = 150; // X-coordinate for the image (right side of the page)
-      const imageY = 20; // Y-coordinate for the image
-      const imageWidth = 40; // Width of the image in mm
-      const imageHeight = 40; // Height of the image in mm
+      const imageX = 150;
+      const imageY = 20;
+      const imageWidth = 40;
+      const imageHeight = 40;
 
       try {
-        doc.addImage(
-          imageUrl, // Image source (Base64 string or URL)
-          "JPEG", // Image format
-          imageX, // X position
-          imageY, // Y position
-          imageWidth, // Width
-          imageHeight // Height
-        );
+        doc.addImage(imageUrl, "JPEG", imageX, imageY, imageWidth, imageHeight);
       } catch (error) {
         console.error("Error adding image to PDF:", error);
       }
@@ -123,10 +129,12 @@ const ResumePDFGenerator = (data: any) => {
     doc.setLineWidth(0.1);
     doc.line(
       pages,
-      currentY + 28,
+      currentY + 25,
       doc.internal.pageSize.width - pages,
-      currentY + 28
+      currentY + 25
     );
+
+    const footerHeight = 15; 
     const leftFields = [
       { key: "AUTHOR", value: data?.data?.AUTHOR_1 || "-" },
       { key: "RELEASE DATE", value: data?.data?.RELEASE_DATE || "-" },
@@ -140,7 +148,7 @@ const ResumePDFGenerator = (data: any) => {
         } ,${data?.data?.CANADIAN_PRICE || "-"}`,
       },
       {
-        key: "  ANNOUNCED 1ST PRINTING BEST",
+        key: "ANNOUNCED 1ST PRINTING BEST",
         value: data?.data?.ANNOUNCED_1ST_PRINTING__BEST || "-",
       },
       { key: "ORIGIN", value: data?.data?.ORIGIN || "-" },
@@ -152,7 +160,7 @@ const ResumePDFGenerator = (data: any) => {
       { key: "SERIES", value: data?.data?.SERIES || "-" },
       { key: "FORMAT", value: data?.data?.FORMAT || "-" },
       { key: "PAGE COUNT", value: data?.data?.PAGES || "-" },
-      { key: "LLUS /INSERT", value: data?.data?.INSERTS_ILLUS || "-" },
+      { key: "ILLUS/INSERT", value: data?.data?.INSERTS_ILLUS || "-" },
       {
         key: " BISAC SUBJECT(S)",
         value: `${data?.data?.BISAC1_DESC || "-"} | ${
@@ -175,7 +183,13 @@ const ResumePDFGenerator = (data: any) => {
       const lineHeight = 10;
       const keyWidth = 40;
       const valueWidth = 50;
-      checkAndAddPage(lineHeight);
+      currentY = checkAndAddPage(
+        doc,
+        currentY,
+        lineHeight,
+        marginBottom,
+        footerHeight
+      );
       doc.setFontSize(keyFontSize);
       doc.setFont("helvetica", "bold");
       doc.text(`${key}:`, 10, currentY, { maxWidth: keyWidth });
@@ -191,7 +205,13 @@ const ResumePDFGenerator = (data: any) => {
       const lineHeight = 10;
       const keyWidth = 40;
       const valueWidth = 50;
-      checkAndAddPage(lineHeight);
+      rightFieldsStartY = checkAndAddPage(
+        doc,
+        rightFieldsStartY,
+        lineHeight,
+        marginBottom,
+        footerHeight
+      );
       doc.setFontSize(keyFontSize);
       doc.setFont("helvetica", "bold");
       doc.text(`${key}:`, 110, rightFieldsStartY, { maxWidth: keyWidth });
@@ -212,17 +232,23 @@ const ResumePDFGenerator = (data: any) => {
 
     const longValue = {
       key: "Description",
-      value: data?.data.DESCRIPTION,
+      value: data.data.DESCRIPTION || "",
     };
     var keyWidth = 40;
     doc.setFont("helvetica", "bold");
     doc.setFontSize(keyFontSize);
     doc.text(`${longValue.key}:`, 10, (currentY += 10), { maxWidth: keyWidth });
     doc.setFont("helvetica", "normal");
-    const textLines = doc.splitTextToSize(longValue.value, 140);
+    const textLines = doc.splitTextToSize(longValue.value, 155);
     textLines.forEach((line: any) => {
       const lineHeight = 6;
-      checkAndAddPage(lineHeight);
+      currentY = checkAndAddPage(
+        doc,
+        currentY,
+        lineHeight,
+        marginBottom,
+        footerHeight
+      );
       doc.text(line, 40, currentY);
       currentY += lineHeight;
     });
@@ -232,15 +258,21 @@ const ResumePDFGenerator = (data: any) => {
     };
     var keyWidth = 40;
     doc.setFont("helvetica", "bold");
-    doc.text(`${ContributoR.key}:`, 10, (currentY += 10), {
+    doc.text(`${ContributoR.key}:`, 10, (currentY += 3), {
       maxWidth: keyWidth,
     });
     doc.setFont("helvetica", "normal");
-    const textLine = doc.splitTextToSize(ContributoR.value, 140);
+    const textLine = doc.splitTextToSize(ContributoR.value, 155);
     doc.setFont("helvetica", "normal");
     textLine.forEach((line: any) => {
       const lineHeight = 6;
-      checkAndAddPage(lineHeight);
+      currentY = checkAndAddPage(
+        doc,
+        currentY,
+        lineHeight,
+        marginBottom,
+        footerHeight
+      );
 
       doc.text(line, 40, currentY);
       currentY += lineHeight;
@@ -251,12 +283,18 @@ const ResumePDFGenerator = (data: any) => {
     };
     var keyWidth = 40;
     doc.setFont("helvetica", "bold");
-    doc.text(`${Marketing.key}:`, 10, (currentY += 10), { maxWidth: keyWidth });
+    doc.text(`${Marketing.key}:`, 10, (currentY += 3), { maxWidth: keyWidth });
     doc.setFont("helvetica", "normal");
-    const line = doc.splitTextToSize(Marketing.value, 140);
+    const line = doc.splitTextToSize(Marketing.value, 155);
     line.forEach((line: any) => {
       const lineHeight = 6;
-      checkAndAddPage(lineHeight);
+      currentY = checkAndAddPage(
+        doc,
+        currentY,
+        lineHeight,
+        marginBottom,
+        footerHeight
+      );
       doc.text(line, 40, currentY);
       currentY += lineHeight;
     });
@@ -268,12 +306,18 @@ const ResumePDFGenerator = (data: any) => {
 
     const valueStartX = 40;
     doc.setFont("helvetica", "bold");
-    doc.text(`${Publicity.key}:`, 10, (currentY += 10), { maxWidth: keyWidth });
+    doc.text(`${Publicity.key}:`, 10, (currentY += 3), { maxWidth: keyWidth });
     doc.setFont("helvetica", "normal");
-    const Line = doc.splitTextToSize(Publicity.value, 140);
+    const Line = doc.splitTextToSize(Publicity.value, 155);
     Line.forEach((line: any) => {
       const lineHeight = 6;
-      checkAndAddPage(lineHeight);
+      currentY = checkAndAddPage(
+        doc,
+        currentY,
+        lineHeight,
+        marginBottom,
+        footerHeight
+      );
       doc.text(line, valueStartX, currentY);
       currentY += lineHeight;
     });
@@ -285,15 +329,20 @@ const ResumePDFGenerator = (data: any) => {
     };
     var keyWidth = 40;
 
-    // const valueWidth = 180;
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    doc.text(`${Category.key}:`, 10, (currentY += 10), { maxWidth: keyWidth });
+    doc.text(`${Category.key}:`, 10, (currentY += 3), { maxWidth: keyWidth });
     doc.setFont("helvetica", "normal");
-    const Lines = doc.splitTextToSize(Category.value, 140);
+    const Lines = doc.splitTextToSize(Category.value, 155);
     Lines.forEach((line: any) => {
       const lineHeight = 6;
-      checkAndAddPage(lineHeight);
+      currentY = checkAndAddPage(
+        doc,
+        currentY,
+        lineHeight,
+        marginBottom,
+        footerHeight
+      );
       doc.text(line, valueStartX, currentY);
       currentY += lineHeight;
     });
@@ -301,12 +350,7 @@ const ResumePDFGenerator = (data: any) => {
     const addFooter = (pageNumber: any, totalPages: any) => {
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
-      const footerHeight = 10;
-      const footerY = pageHeight - footerHeight - 5;
-      const lineY = footerY;
-      doc.setLineWidth(0.2);
-      doc.line(10, lineY, pageWidth - 10, lineY);
-
+      const footerY = pageHeight - footerHeight;
       const logoUrl = "/images/Abrams.png";
       const imgWidth = 40;
       const imgHeight = 12;
@@ -343,7 +387,7 @@ const ResumePDFGenerator = (data: any) => {
     currentY = 20;
 
     try {
-      doc.save("resume.pdf");
+      doc.save("Title-List.pdf");
     } catch (error) {
       console.error("Error generating PDF:", error);
     }
