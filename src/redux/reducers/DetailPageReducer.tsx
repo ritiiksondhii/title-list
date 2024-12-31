@@ -132,8 +132,8 @@ const bookSlice = createSlice({
       .addCase(FetchDetailsRecord.fulfilled, (state, action) => {
         state.isLoading = false;
         state.status = "success";
-        state.data = action.payload.data;
-        console.log( action.payload.data,"detailss")
+        state.data = action.payload.data.data;
+        console.log( action.payload.data.data,"detailss")
       })
       .addCase(FetchDetailsRecord.rejected, (state) => {
         state.isLoading = false;

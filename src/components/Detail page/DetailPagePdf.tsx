@@ -8,7 +8,6 @@ import {
   setDetails,
 } from "../../redux/reducers/DetailPageReducer";
 import { useParams } from "react-router-dom";
-// import ResumePDFGenerator from "./generatePdf";
 import moment from "moment";
 import ResumePDFGenerator from "./genaeratPdf";
 
@@ -34,15 +33,38 @@ const DetailPagePdf: React.FC = () => {
     console.log(params.id, "params id");
   };
 
+  const splitIntoChunks = (text:any, chunkSize:any) => {
+    const words = text.split(' ');
+    const chunks = [];
+    let currentChunk:any = [];
+    let currentLength = 0;
+
+    words.forEach((word:any) => {
+      if (currentLength + word.length + currentChunk.length <= chunkSize) {
+        currentChunk.push(word);
+        currentLength += word.length;
+      } else {
+        chunks.push(currentChunk.join(' '));
+        currentChunk = [word];
+        currentLength = word.length;
+      }
+    });
+
+    if (currentChunk.length > 0) {
+      chunks.push(currentChunk.join(' '));
+    }
+
+    return chunks;
+  };
+
+  const descriptionChunks = DetailData.DESCRIPTION ? 
+    splitIntoChunks(DetailData.DESCRIPTION, 920) : [];
+// console.log(descriptionChunks,"descriptionChunks")
   return (
     <div className="flex flex-col h-screen">
       <div className=" mx-20 overflow-y-auto h-[100vh] pb-4 mt-4">
-        {/* <button className="bg-red-400 px-2 py-2" onClick={handleDownloadPdf}>
-          Download
-        </button> */}
-        {/* <ResumePDFGenerator data={DetailData}/> */}
         <ResumePDFGenerator data={DetailData} />
-        <div id="section1" style={{ height: "279mm" }} >
+        <div id="section1" >
           <div className="bg-gradient-to-r from-red-500 text-white flex justify-between items-center px-6 py-4 mb-4 ">
             <h1 className="text-xl font-bold text-white">{DetailData.TESTIMPRINTFROMHNA} </h1>
             <span className="text-sm text-red-900">Fall 2025</span>
@@ -66,19 +88,6 @@ const DetailPagePdf: React.FC = () => {
                   <span className="font-semibold">TITLE:</span>{" "}
                   {DetailData.FULL_TITLE ? DetailData.FULL_TITLE : "-"}
                 </p>
-                {/* <p className="text-sm">
-            <span className="font-semibold">Audio Rights:</span> Yes
-          </p>
-          <p className="text-sm">
-            <span className="font-semibold">Pub Month:</span> September
-          </p>
-          <p className="text-sm">
-            <span className="font-semibold">Rights Available:</span> World
-            English
-          </p>
-          <p className="text-sm">
-            <span className="font-semibold">Ames/Cart Qty:</span> 30/3000
-          </p> */}
               </div>
               <div className="border-2 border-black ">
                 <img
@@ -96,26 +105,26 @@ const DetailPagePdf: React.FC = () => {
                   <p>{DetailData.AUTHOR_1 ? DetailData.AUTHOR_1 : "-"} </p>
                 </p>
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold  w-[150px]">RELEASE DATE</span>
+                  <span className="font-semibold  w-[150px]">RELEASE DATE:</span>
                   <p>
                     {DetailData.RELEASE_DATE ? DetailData.RELEASE_DATE : "-"}{" "}
                   </p>
                 </p>
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold  w-[150px]">PUB MONTH</span>{" "}
+                  <span className="font-semibold  w-[150px]">PUB MONTH:</span>{" "}
                   <p>{DetailData.PUBMONTH ? DetailData.PUBMONTH : "-"}</p>
                 </p>
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold  w-[150px]">ON SALE-DATE</span>{" "}
+                  <span className="font-semibold  w-[150px]">ON SALE-DATE:</span>{" "}
                   <p>{DetailData.PUB_DATE ? DetailData.PUB_DATE : "-"} </p>
                 </p>
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold  w-[150px]">AGE RANGE</span>{" "}
+                  <span className="font-semibold  w-[150px]">AGE RANGE:</span>{" "}
                   <p>{DetailData.AGE_RANGE ? DetailData.AGE_RANGE : "-"} </p>
                 </p>
                 <p className="text-sm py-2 flex">
                   <span className="font-semibold flex gap-4  w-[150px]">
-                    PRICE{" "}
+                    PRICE:{" "}
                   </span>
 
                   <p className="font-normal px-2 ">
@@ -132,7 +141,7 @@ const DetailPagePdf: React.FC = () => {
                 </p>
                 <p className="text-sm py-2 flex">
                   <span className="font-semibold  w-[150px]">
-                    ANNOUNCED 1ST PRINTING BEST
+                    ANNOUNCED 1ST PRINTING BEST:
                   </span>
                   <p>
                     {DetailData.ANNOUNCED_1ST_PRINTING__BEST
@@ -141,43 +150,43 @@ const DetailPagePdf: React.FC = () => {
                   </p>
                 </p>
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold  w-[150px]">ORIGIN</span>{" "}
+                  <span className="font-semibold  w-[150px]">ORIGIN:</span>{" "}
                   {/* <p>235678</p> */}
                 
                 </p>
                 <p className="text-sm py-2 flex">
                   <span className="font-semibold  w-[150px]">
-                    AUTHOR BY LINE
+                    AUTHOR BY LINE:
                   </span>{" "}
                   <p>{DetailData.AUTHOR_1 ? DetailData.AUTHOR_1 : "-"} </p>
                 </p>
               </div>
               <div className="w-[500px] h-auto pl-4">
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold w-[150px]">EDITOR</span>{" "}
+                  <span className="font-semibold w-[150px]">EDITOR:</span>{" "}
                   <p>{DetailData.EDITOR ? DetailData.EDITOR : "-"} </p>
                 </p>
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold w-[150px]">SERIES</span>{" "}
+                  <span className="font-semibold w-[150px]">SERIES:</span>{" "}
                   <p>{DetailData.SERIES ? DetailData.SERIES : "-"} </p>{" "}
                 </p>
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold w-[150px]">FORMAT</span>{" "}
+                  <span className="font-semibold w-[150px]">FORMAT:</span>{" "}
                   <p>{DetailData.FORMAT ? DetailData.FORMAT : "-"} </p>
                 </p>
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold w-[150px]">PAGE COUNT</span>{" "}
+                  <span className="font-semibold w-[150px]">PAGE COUNT:</span>{" "}
                   <p>{DetailData.PAGES ? DetailData.PAGES : "-"} </p>
                 </p>
                 <p className="text-sm py-2 flex">
-                  <span className="font-semibold w-[150px]">ILLUS /INSERT</span>{" "}
+                  <span className="font-semibold w-[150px]">ILLUS /INSERT:</span>{" "}
                   <p>
                     {DetailData.INSERTS_ILLUS ? DetailData.INSERTS_ILLUS : "-"}{" "}
                   </p>{" "}
                 </p>
                 <p className="text-sm py-2 flex">
                   <span className="font-semibold w-[150px]">
-                    BISAC SUBJECT(S)
+                    BISAC SUBJECT(S):
                   </span>{" "}
                 </p>
                 <p className="text-sm py-2 flex">
@@ -198,71 +207,14 @@ const DetailPagePdf: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-between items-center  border-b border-black pb-4 mb-4"></div>
-
-            {/* Keywords Section */}
-            {/* <div className="mb-6">
-            <h3 className="text-[14px] font-semibold mb-2">KeyNote :</h3>
-            <p className="text-sm text-gray-700"></p>
-          </div> */}
-
-            {/* <div className="mb-6">
-            <h3 className="text-[14px] font-semibold mb-2">Selling Points:</h3> */}
-            {/* <ul className=" pl-5 text-sm text-gray-700 list-none">
-              <li className="py-4">
-                <p className="font-semibold text-black ">
-                  {" "}
-                  FILM BUZZ :
-                  <span className="font-normal">
-                    Movie currently in production with Universal and Temple
-                    Hill, the production studio behind the success of book
-                    adaptations like Twilight, Maze Runner, and The Hate U Give.
-                  </span>
-                </p>
-              </li>
-              <li className="py-4">
-                <p className="font-semibold text-black">
-                  {" "}
-                  BESTSELLING AUTHOR:
-                  <span className="font-normal">
-                    The Lightlark Saga (Book 2) was an instant #1 New York Times
-                    bestseller, with tremendous anticipation for the series
-                    finale. Book 1 was also featured as a Good Morning America
-                    Book Club Pick and a Books-A-Million Club Pick.
-                  </span>
-                </p>
-              </li>
-              <li className="py-4">
-                <p className="font-semibold text-black">
-                  SOCIAL MEDIA REACH:
-                  <span className="font-normal">
-                    The Lightlark Saga (Book 2) was an instant #1 New York Times
-                    bestseller, with tremendous anticipation for the series
-                    finale. Book 1 was also featured as a Good Morning America
-                    Book Club Pick and a Books-A-Million Club Pick.
-                  </span>
-                </p>
-              </li>
-              <li className="py-4">
-                <p className="font-semibold text-black">
-                  MEDIA DARLING:
-                  <span className="font-normal">
-                    The Lightlark Saga (Book 2) was an instant #1 New York Times
-                    bestseller, with tremendous anticipation for the series
-                    finale. Book 1 was also featured as a Good Morning America
-                    Book Club Pick and a Books-A-Million Club Pick.
-                  </span>
-                </p>
-              </li>
-            </ul> */}
-            {/* </div> */}
-
-            {/* Description */}
-            <div className="max-h-[100px] h-[100px] overflow-y-auto ">
-              <h3 className="text-[14px] font-semibold mb-2">Description:</h3>
-              <p className="text-sm text-gray-700  ">
-                {DetailData.DESCRIPTION ? DetailData.DESCRIPTION : "-"}
-              </p>
-            </div>
+{DetailData.DESCRIPTION && (
+          <div>
+            <h3 className="text-[14px] font-semibold mb-2">Description:</h3>
+            <p className="text-sm text-gray-700">
+              {descriptionChunks[0] || "-"}
+            </p>
+          </div>
+        )}
             {/* Footer */}
             <div className="flex justify-between items-center mt-8  border-t border-gray-300 pt-4">
               <img
@@ -278,7 +230,7 @@ const DetailPagePdf: React.FC = () => {
        {
         DetailData.MARKETING_BULLETS__FACT_SHEET || DetailData.PUBLICITY || DetailData.CATEGORY1 || DetailData.CATEGORY2 || DetailData.CATEGORY3 || DetailData.AUTHOR_1 ?  <div id="section2" className=" overflow-y-auto  pb-4 relative">
         <div className="bg-gradient-to-r from-red-500 text-white flex justify-between items-center px-6 py-4 mb-4  ">
-          <h1 className="text-xl font-bold text-white">{selectedImprint} </h1>
+          <h1 className="text-xl font-bold text-white">{DetailData.TESTIMPRINTFROMHNA}</h1>
           <span className="text-sm text-red-900">Fall 2025</span>
         </div>
         <div
@@ -292,7 +244,16 @@ const DetailPagePdf: React.FC = () => {
 
           {/* Keywords Section */}
           
-            <div className={`mb-6 ${DetailData.AUTHOR_BIO.trim().length>=1? "max-h-[150px] h-[150px] overflow-y-auto ":""}`}>
+
+          {descriptionChunks.length > 1 && (
+              <div className="mb-6">
+                <p className="text-sm text-gray-700">
+                  {descriptionChunks.slice(1).join(' ')}
+                </p>
+              </div>
+            )}
+
+            <div className={`mb-6`}>
             <h3 className={`text-[14px] font-semibold mb-2 `}>
               Contributor Bio :{" "}
             </h3>
@@ -340,7 +301,7 @@ const DetailPagePdf: React.FC = () => {
                 className="w-full max-w-36 h-18 object-cover "
               />
               <span className="text-sm text-gray-500">{moment(DetailData.PUB_DATE).format("MM/DD/YYYY")} </span>
-              <span className="text-sm text-gray-500">Page 2 of 3</span>
+              <span className="text-sm text-gray-500">Page 2 of 2</span>
             </div>
           </div>
         </div>
